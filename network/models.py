@@ -3,8 +3,8 @@ from django.db import models
 
 
 class User(AbstractUser):
-    first_name = models.CharField(max_length=24, default=None)
-    bio = models.CharField(default=None, max_length=150)
+    first_name = models.CharField(max_length=24, default="None")
+    bio = models.CharField(default="", max_length=150)
     profilePicture = models.ImageField(
         upload_to="static/images", default="def_profile_pic.jpg", blank=True, null=True)
 

@@ -3,4 +3,30 @@
 {% block body %}
     TODO
     <h1>Commit test</h1>
+    {% if message %}
+    <div>{{ message }}</div>
+    {% endif %}
+    <form id='post'>
+
+        <input type='text' id='caption'>
+        <input type='submit' value="submit"> 
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function(){
+            document.querySelector("#post").addEventListener('submit', (e) => {
+                e.preventDefault();
+                text = document.querySelector("#caption").value;
+                fetch('/test', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers:{
+                        'Accept': 'application/json',
+                        
+                },
+                    body: JSON.stringify({ caption: text}) 
+                })
+                })
+            })
+            
+    </script>
 {% endblock %}

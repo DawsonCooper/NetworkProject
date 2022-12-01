@@ -1,14 +1,35 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
-from .models import User
+from .models import User, Post
 
 
 def index(request):
     return render(request, "network/index.html")
+
+
+@csrf_exempt
+@login_required
+def test(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        message = data.get('caption', "")
+        print(message)
+        user = request.user
+        newPost = Post(
+            userId=user,
+            caption=message,
+        )
+        newPost.save()
+        return render(request, "network/index.html", {
+            message: newPost.caption
+        })
 
 
 def login_view(request):
