@@ -3,12 +3,14 @@ from django.db import models
 
 
 class User(AbstractUser):
-    first_name = models.CharField(max_length=24)
-    bio = models.CharField(max_length=150)
+    first_name = models.CharField(max_length=24, default=None)
+    bio = models.CharField(default=None, max_length=150)
+    profilePicture = models.ImageField(
+        upload_to="static/images", default="def_profile_pic.jpg", blank=True, null=True)
 
 
 class Post(models.Model):
-    userId = models.ForeignKey(User, default=None)
+    userId = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
     caption = models.CharField(max_length=300)
     image = models.ImageField(default=None)
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -17,11 +19,11 @@ class Post(models.Model):
 
 
 class Likes(models.Model):
-    userId = models.ForeignKey(User, default=None)
-    postId = models.ForeignKey(Post, default=None)
+    userId = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+    postId = models.ForeignKey(Post, default=None, on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
-    userId = models.ForeignKey(User, default=None)
-    postId = models.ForeignKey(Post, default=None)
+    userId = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+    postId = models.ForeignKey(Post, default=None, on_delete=models.CASCADE)
     content = models.CharField(max_length=150)
