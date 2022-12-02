@@ -16,7 +16,7 @@ def index(request):
 
 @csrf_exempt
 @login_required
-def test(request):
+def sendPost(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         message = data.get('caption', "")
