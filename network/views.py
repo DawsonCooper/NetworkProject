@@ -6,30 +6,36 @@ from django.urls import reverse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-
+from django import forms
 from .models import User, Post
 
 
+class PostForm(forms.Form):
+    caption = forms.CharField(widget=forms.Textarea(attrs={
+        'cols': '60',
+        'placeholder': 'Your two cents'
+    }))
+    image = forms.ImageField(required=False)
+
+
 def index(request):
-    return render(request, "network/index.html")
-
-
-@csrf_exempt
-@login_required
-def sendPost(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        message = data.get('caption', "")
-        print(message)
-        user = request.user
-        newPost = Post(
-            userId=user,
-            caption=message,
-        )
-        newPost.save()
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = Post(
+                userId=request.user.id,
+                caption=form.cleaned_data['caption'],
+                image=form.cleaned_data['image'],
+
+            )
+            post.save()
         return render(request, "network/index.html", {
-            message: newPost.caption
+            'postForm': PostForm
         })
+
+    return render(request, "network/index.html", {
+        'postForm': PostForm
+    })
 
 
 def login_view(request):
