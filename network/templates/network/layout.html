@@ -17,7 +17,7 @@
         <nav id='navbar' class="navbar navbar-expand-lg">
             <a class="navbar-brand" href="#">Network</a>
           
-            <div>
+            <div id='navbar-container'>
               <ul class="navbar-nav mr-auto" >
                 {% if user.is_authenticated %}
                     <li class="nav-item">
@@ -37,25 +37,25 @@
                         <a class="nav-link" href="#">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <button type="button" id='newPostButton' class="btn btn-dark" data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap">
+                        <button type="button" id='newPostButton' class="btn btn-dark" data-toggle="modal" data-target="#modalBackdrop" data-whatever="@getbootstrap">
                             <box-icon animation='none' id='newPostSvg' name='plus-circle' size='30px' color="rgb(230, 230, 230)"></box-icon></button>
                     
-                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
+                            <div class="modal fade" id="modalBackdrop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background-color: rgba(125, 125, 125, 0.25)">
+                                <div class="modal-dialog" role="document" tabindex='5'>
                                 <div class="modal-content">
                                 <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Thoughts?</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">New Post</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
+                                <span aria-hidden="true"><box-icon name='x-circle' color='white' size='sm'></box-icon></span>
                                 </button>
                             </div>
                             <div class="modal-body">
                             <form>
-                              <div class="form-group">
+                              <div id='textarea-div' class="form-group">
                                 {{ postForm.caption }}            
                               
                                 <div id='image-container'>
-                                    <label for='id_image' id='image-label'><box-icon name='image-add'></box-icon></label>
+                                    <label for='id_image' id='image-label'><box-icon name='image-add' color='white'></box-icon></label>
                                     <div id='image-input'>{{ postForm.image }}</div>
                                 </div>
                             </div>

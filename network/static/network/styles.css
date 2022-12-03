@@ -20,7 +20,7 @@ strong{
     color: rgb(180, 178, 178);
     transition: all .25s linear;
 }
-#navbar div{
+#navbar-container{
     width: 45%;
     text-align: center;
 }
@@ -90,7 +90,19 @@ img {
     border-radius: 5px;
     object-fit: cover;
 }
+/* NEW POST MODAL STYLES */
+
+.modal-content{
+    background-color: rgb(0, 0, 0);
+    opacity: 100%;
+    color: white;
+    
+}
+#textarea-div{
+    text-align: left;
+}
 textarea{
+    margin-bottom: 1rem;
     border: none;
     resize: none;
 }

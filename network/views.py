@@ -12,7 +12,7 @@ from .models import User, Post
 
 class PostForm(forms.Form):
     caption = forms.CharField(widget=forms.Textarea(attrs={
-        'cols': '60',
+        'cols': '40',
         'placeholder': 'Your two cents'
     }))
     image = forms.ImageField(required=False)
