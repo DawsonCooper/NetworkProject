@@ -2,13 +2,51 @@
 
 {% block body %}
 
-    {% if message %}
+    <hr id='fullscreen-split'>
     <div id='index-body'>
         <div id='post-container'>
-            
+            <!-- DISPLAY 10 POSTS ONCE AT THE BOTTOM USERS SHOULD BE ABLE TO GO TO THE NEXT PAGE UNTIL 
+            THEY REACH THE END THEY SHOULD THEN BE ABLE TO NAVIGATE BACK -->
+            {% for i in posts %}
+                <div>
+                    <div class='user-info'>
+                    <!--Profile pic and username once foreinkey works and 
+                        if statement if user == request.user display an edit button on seperate side -->
+                    
+                    </div>
+                    <div class='post-content'>
+                        <p>
+                            {{ i.caption }}
+                        </p>
+                    </div>
+                    <!-- if image != False display small image when clicked gets larger and blurs background like modal -->
+
+                    <div class='post-footer'>
+                        <div class='interactions'>
+                            <box-icon size='sm' name='like'></box-icon>
+                            <box-icon size='sm' name='dislike' ></box-icon>
+                            <box-icon size='sm' name='comment'></box-icon>
+                        </div>
+                        <div class='post-timestamp'>
+                            {{ i.timestamp }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                  </li>
+
+                  <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                  </li>
+                </ul>
+              </nav>
         </div>
     </div>
-    {% endif %}
+    
 
 
 {% endblock %}

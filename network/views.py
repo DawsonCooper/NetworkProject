@@ -7,7 +7,9 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django import forms
+from django.db import models
 from .models import User, Post
+from django.core.paginator import Paginator
 
 
 class PostForm(forms.Form):
@@ -23,7 +25,7 @@ def index(request):
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = Post(
-                userId=request.user.id,
+                user=request.user,
                 caption=form.cleaned_data['caption'],
                 image=form.cleaned_data['image'],
 
@@ -31,6 +33,15 @@ def index(request):
             post.save()
         return render(request, "network/index.html", {
             'postForm': PostForm
+        })
+    posts = Post.objects.all().values()
+    posts = Paginator(posts, 10)
+    print(posts.page(1).object_list)
+    if posts.num_pages <= 5:
+        return render(request, "network/index.html", {
+            'postForm': PostForm,
+            'numPages': posts.num_pages,
+            'posts': posts.page(1).object_list,
         })
 
     return render(request, "network/index.html", {
@@ -45,11 +56,12 @@ def login_view(request):
         username = request.POST["username"]
         password = request.POST["password"]
         user = authenticate(request, username=username, password=password)
-
+        print(user)
         # Check if authentication successful
         if user is not None:
+
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            return index(request)
         else:
             return render(request, "network/login.html", {
                 "message": "Invalid username and/or password."
@@ -67,24 +79,41 @@ def register(request):
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
-
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            bio = form.cleaned_data["caption"]
+            profilePic = form.cleaned_data["image"]
         # Ensure password matches confirmation
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
             return render(request, "network/register.html", {
-                "message": "Passwords must match."
+                "message": "Passwords must match.",
+                'postForm': PostForm,
             })
 
         # Attempt to create new user
         try:
             user = User.objects.create_user(username, email, password)
             user.save()
+            if profilePic != None:
+                User.objects.filter(username=username, password=password).update(
+                    bio=bio,
+                    profilePic=profilePic,
+                )
+            else:
+                User.objects.filter(username=username, password=password).update(
+                    bio=bio,
+
+                )
         except IntegrityError:
             return render(request, "network/register.html", {
-                "message": "Username already taken."
+                "message": "Username already taken.",
+                'postForm': PostForm,
             })
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
-        return render(request, "network/register.html")
+        return render(request, "network/register.html", {
+            'postForm': PostForm,
+        })

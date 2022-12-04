@@ -21,7 +21,14 @@
               <ul class="navbar-nav mr-auto" >
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
+                
+                        <a id="profile-pic" class="nav-link" href="#">
+                            {% if user.profilePicture != 'False' %}
+                                <img src="network/static/images/{{ user.profilePicture }}" id='navbar-profilePic'>
+                            {% else %}
+                                <box-icon id='profilePicIcon' name='user-circle' size='md' color='rgb(230, 230, 230)'></box-icon>
+                            {% endif %}
+                            <strong>{{ user.username }}</strong></a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
@@ -50,7 +57,8 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                            <form>
+                            <form action='' method='POST'>
+                                {% csrf_token %}
                               <div id='textarea-div' class="form-group">
                                 {{ postForm.caption }}            
                               
@@ -86,10 +94,10 @@
             
           </nav>
         
-        <div class="body">
+        
             {% block body %}
             {% endblock %}
-        </div>
+        
         <script src="{% static 'network/script.js' %}"></script>
         <script type="module" src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     </body>

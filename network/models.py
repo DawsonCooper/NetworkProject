@@ -6,14 +6,14 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=24, default="None")
     bio = models.TextField(default="")
     profilePicture = models.ImageField(
-        upload_to="network/static/images", default="def_profile_pic.jpg", blank=True, null=True)
+        upload_to="network/static/images", default=False, blank=True, null=True)
 
 
 class Post(models.Model):
     userId = models.IntegerField(User, default=None)
     caption = models.TextField(default="")
     image = models.ImageField(
-        upload_to="network/static/images", default=None, blank=True, null=True)
+        upload_to="network/static/images", default=False, blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     totalLikes = models.IntegerField(default=0)
     totalComments = models.IntegerField(default=0)
