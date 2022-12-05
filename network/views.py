@@ -20,6 +20,7 @@ class PostForm(forms.Form):
     image = forms.ImageField(required=False)
 
 
+@csrf_exempt
 def like(request, postId):
     try:
         post = Post.objects.get(id=postId)
@@ -33,15 +34,42 @@ def like(request, postId):
             like.append(user)
         print(likes)
         return JsonResponse(likes)
-    if request.method == 'PUT':
-        row = Post.objects.filter(id=postId)
-        totalLikes = getattr(row, 'totalLikes')
-        Post.objects.filter(id=postId).update(totalLikes=totalLikes + 1)
 
     if request.method == 'POST':
-        like = Likes.objects.create_likes(
-            username=request.username, post=postId)
-        like.save()
+        # UPDATE THE LIKES MODEL TO TRACK WHO HAS LIKED THE POST
+        updateLike = True
+        try:
+            updateLike = Likes.objects.get(post=postId, username=request.user)
+        except Likes.DoesNotExist:
+            like = Likes(
+                username=request.user,
+                post=postId,
+                status=True)
+            like.save()
+
+        alreadyLiked = Likes.objects.filter(
+            post=postId, username=request.user).values()
+        print(alreadyLiked)
+        placeholder = False
+        if alreadyLiked[0]['status'] != True:
+            print('made it to elif')
+            placeholder = True
+            updateLike.status = True
+            updateLike.save()
+        else:
+            print('made it to else')
+            placeholder = False
+            updateLike.status = False
+            updateLike.save()
+
+        # UPDATE POST MODEL TO TRACK NUM OF LIKES
+        row = Post.objects.filter(id=postId).values()
+        totalLikes = row[0]['totalLikes']
+        if placeholder == True:
+            Post.objects.filter(id=postId).update(totalLikes=totalLikes + 1)
+        else:
+            Post.objects.filter(id=postId).update(totalLikes=totalLikes - 1)
+
     return JsonResponse({'successful': 'Liked'})
 
 

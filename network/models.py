@@ -40,6 +40,7 @@ class Post(models.Model):
 class Likes(models.Model):
     username = models.CharField(default=None, max_length=24)
     post = models.IntegerField(default=None)
+    status = models.BooleanField(default=None)
 
     def get_user(self):
         refrence = User.objects.filter(username=self.username).values()

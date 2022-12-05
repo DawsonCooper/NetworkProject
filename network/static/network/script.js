@@ -26,7 +26,7 @@ function imagePreview() {
 }
 function interactButtonHover(button){
     for(let i=0; i < button.length; i++){
- 
+        
         button[i].addEventListener('mouseover', () =>{
            button[i].childNodes[0].setAttribute("type", "solid");
         });
@@ -40,6 +40,7 @@ function interactButtonHover(button){
        
             button[i].addEventListener('click', (e) =>{
                 e.preventDefault();
+                let postId = button[i].name;
                 if (button != commentButton){
                     if (button[i].childNodes[0]._state.color != "red"){
                         button[i].childNodes[0].setAttribute("type", "solid");
@@ -49,6 +50,11 @@ function interactButtonHover(button){
                         button[i].childNodes[0].setAttribute("type", 'solid');
                     }
                 }
+                fetch(`/like/${postId}`, {
+                    method: 'POST',
+                }).then(response => response.json())
+                .then(result => console.log(result))
+                .catch(error => console.log(error));
             })
         }}
 

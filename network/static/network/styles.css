@@ -160,3 +160,6 @@ textarea:focus-visible{
     display: flex;
     justify-content: space-between;
 }
+.interaction-icons{
+    margin: 5px;
+}

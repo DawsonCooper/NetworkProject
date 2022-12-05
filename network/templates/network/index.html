@@ -25,9 +25,9 @@
                         <div class='interactions'>
                             <form method='POST'>
                                 {% csrf_token %}
-                                <button class='like interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='like' class='interaction-icons'></box-icon></button>
-                                <button class='dislike interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='dislike' class='interaction-icons'></box-icon></button>
-                                <button class='comment interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='comment' class='interaction-icons'></box-icon></button>
+                                <button type='submit' class='like interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='like' class='interaction-icons'></box-icon></button>
+                                <button type='submit' class='dislike interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='dislike' class='interaction-icons'></box-icon></button>
+                                <button type='submit' class='comment interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='comment' class='interaction-icons'></box-icon></button>
                             </form>
                         </div>
                         <div class='post-timestamp'>
