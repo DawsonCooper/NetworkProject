@@ -8,11 +8,11 @@
             <!-- DISPLAY 10 POSTS ONCE AT THE BOTTOM USERS SHOULD BE ABLE TO GO TO THE NEXT PAGE UNTIL 
             THEY REACH THE END THEY SHOULD THEN BE ABLE TO NAVIGATE BACK -->
             {% for i in posts %}
-                <div>
+                <div class='single-post-container' id='{{ i.id }}'>
                     <div class='user-info'>
                     <!--Profile pic and username once foreinkey works and 
                         if statement if user == request.user display an edit button on seperate side -->
-                    
+                        <box-icon id='profilePicIcon' name='user-circle' size='sm' color='rgb(230, 230, 230)'></box-icon>{{ i.username }}
                     </div>
                     <div class='post-content'>
                         <p>
@@ -23,9 +23,12 @@
 
                     <div class='post-footer'>
                         <div class='interactions'>
-                            <box-icon size='sm' name='like'></box-icon>
-                            <box-icon size='sm' name='dislike' ></box-icon>
-                            <box-icon size='sm' name='comment'></box-icon>
+                            <form method='POST'>
+                                {% csrf_token %}
+                                <button class='like interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='like' class='interaction-icons'></box-icon></button>
+                                <button class='dislike interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='dislike' class='interaction-icons'></box-icon></button>
+                                <button class='comment interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='comment' class='interaction-icons'></box-icon></button>
+                            </form>
                         </div>
                         <div class='post-timestamp'>
                             {{ i.timestamp }}

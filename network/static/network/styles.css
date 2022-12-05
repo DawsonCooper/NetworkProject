@@ -144,3 +144,19 @@ textarea:focus-visible{
     border-left: 1px solid rgba(255, 255, 255, 0.1);
     border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
+.user-info{
+    display: flex;
+    align-items: center;
+}
+.single-post-container{
+    padding: .5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.interaction-button{
+    background-color: black;
+    border: none;
+}
+.post-footer{
+    display: flex;
+    justify-content: space-between;
+}
