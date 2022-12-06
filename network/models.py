@@ -48,7 +48,7 @@ class Likes(models.Model):
         return {'refrence': refrence}
 
     def serialize(self):
-        return {'username': self.username, 'post': self.post}
+        return {'username': self.username, 'post': self.post, 'status': self.status}
 
 
 class Comment(models.Model):

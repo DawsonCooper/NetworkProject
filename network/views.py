@@ -21,6 +21,13 @@ class PostForm(forms.Form):
 
 
 @csrf_exempt
+def get_user_interactions(request):
+    interactions = Likes.objects.filter(username=request.user)
+
+    return JsonResponse([interaction.serialize() for interaction in interactions], safe=False)
+
+
+@csrf_exempt
 def interaction_API(request, postId):
     try:
         post = Post.objects.get(id=postId)
@@ -41,40 +48,37 @@ def interaction_API(request, postId):
         interaction = data.get('body')
         print('interaction', interaction)
         updateLike = True
+        statusValue = 0
+        if interaction == 'like':
+            statusValue = 1
+        elif interaction == 'dislike':
+            statusValue = -1
+        elif interaction == 'undo':
+            statusValue = 0
         try:
             updateLike = Likes.objects.get(post=postId, username=request.user)
         except Likes.DoesNotExist:
             like = Likes(
                 username=request.user,
                 post=postId,
-                status=1)
+                status=statusValue)
             like.save()
             return JsonResponse({'successful': 'Liked'})
 
         alreadyLiked = Likes.objects.filter(
             post=postId, username=request.user).values()
         print(alreadyLiked)
-        placeholder = -1
-        if interaction == 'like':
-            print('user liked')
-            placeholder = 1
-            updateLike.status = 1
-            updateLike.save()
-
-        elif interaction == 'dislike':
-            print('user disliked')
-            placeholder = -1
-            updateLike.status = -1
-            updateLike.save()
-        else:
-            # THIS WILL BE IF THE BODY IS A COMMENT
+        updateLike.status = statusValue
+        updateLike.save()
+        if statusValue == 0 and interaction != 'undo':
+            # THIS WILL BE FOR OUT COMMENTS AND WE WILL BE MODIFYING THE COMMMENT MODEL
             pass
         # UPDATE POST MODEL TO TRACK NUM OF LIKES
         row = Post.objects.filter(id=postId).values()
         totalLikes = row[0]['totalLikes']
-        if placeholder == 1:
+        if statusValue == 1:
             Post.objects.filter(id=postId).update(totalLikes=totalLikes + 1)
-        elif placeholder == -1:
+        elif statusValue == -1:
             Post.objects.filter(id=postId).update(totalLikes=totalLikes - 1)
         else:
             pass
@@ -82,8 +86,9 @@ def interaction_API(request, postId):
 
 
 def index(request):
-    interaction = Likes.objects.all().filter(username=request.user).values()
+
     posts = Post.objects.all().values()
+    posts = posts.order_by("-timestamp").all()
     posts = Paginator(posts, 10)
 
     if posts.num_pages <= 5:
@@ -91,7 +96,7 @@ def index(request):
             'postForm': PostForm,
             'numPages': posts.num_pages,
             'posts': posts.page(1).object_list,
-            'interactions': interaction,
+
         })
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
@@ -107,7 +112,7 @@ def index(request):
             'postForm': PostForm,
             'numPages': posts.num_pages,
             'posts': posts.page(1).object_list,
-            'interactions': interaction,
+
 
         })
 
@@ -115,7 +120,7 @@ def index(request):
         'postForm': PostForm,
         'numPages': posts.num_pages,
         'posts': posts.page(1).object_list,
-        'interactions': interaction,
+
 
     })
 

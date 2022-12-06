@@ -56,10 +56,17 @@ function interactButtonHover(button){
                         button[i].childNodes[0].setAttribute("color", "red");
                         if (button == likeButton){
                             sendInteraction('like', postId);
+                            dislikeButton.childNodes[0].setAttribute("type", "regular");
+                            dislikeButton.childNodes[0].setAttribute("color", "white");
+                            
                         }else{
                             sendInteraction('dislike', postId);
+                            likeButton.childNodes[0].setAttribute("type", "regular");
+                            likeButton.childNodes[0].setAttribute("color", "white");
+                            
                         }
                     }else{
+                        sendInteraction('undo', postId);
                         button[i].childNodes[0].setAttribute("color", 'white');
                         button[i].childNodes[0].setAttribute("type", 'solid');
                     }
@@ -79,6 +86,26 @@ document.addEventListener('DOMContentLoaded', function() {
     interactButtonHover(likeButton)
     interactButtonHover(dislikeButton)
     interactButtonHover(commentButton)
+    let interactionsArr;
+    fetch(`/get_user_interactions`, {
+        method: 'GET',
+        }).then(response => response.json())
+        .then(result => {
+            for (let i = 0; i < result.length; i++){
+                console.log(result);
+                let arrOfButtons = document.querySelectorAll(`[name="${result[i].post}"]`);
+                console.log(arrOfButtons)
+                if(result[i].status == 1){
+                    arrOfButtons[0].childNodes[0].setAttribute('color', 'red');
+                    arrOfButtons[0].childNodes[0].setAttribute('type', 'solid');
+                }else if(result[i].status == -1){
+                    arrOfButtons[1].childNodes[0].setAttribute('color', 'red');
+                    arrOfButtons[1].childNodes[0].setAttribute('type', 'solid'); 
+                }
+            }
+        })
+        .catch(error => console.log(error));
+
     if (imageInput){
         imageInput.addEventListener("change", imagePreview);
     }

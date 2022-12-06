@@ -13,7 +13,8 @@ urlpatterns = [
 
     # API routes
     path('like/<int:postId>', views.interaction_API, name="like"),
-
+    path("get_user_interactions", views.get_user_interactions,
+         name="get_user_interactions"),
     # MEDIA routes
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

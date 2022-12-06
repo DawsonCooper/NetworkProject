@@ -7,7 +7,6 @@
         <div id='post-container'>
             <!-- DISPLAY 10 POSTS ONCE AT THE BOTTOM USERS SHOULD BE ABLE TO GO TO THE NEXT PAGE UNTIL 
             THEY REACH THE END THEY SHOULD THEN BE ABLE TO NAVIGATE BACK -->
-            {% for interaction in interactions %}
             {% for i in posts %}
                 <div class='single-post-container' id='{{ i.id }}'>
                     <div class='user-info'>
@@ -26,34 +25,16 @@
                         <div class='interactions'>
                             <form method='POST'>
                                 {% csrf_token %}
-                                <p>{{ interaction.post }} / {{ interaction.status }}</p>
-                                {% if interaction.status == 1 and interaction.post == i.id %}
-                                    <button type='submit' class='like interaction-button' name='{{ i.id }}'><box-icon color='red' type='solid' size='sm' name='like' class='interaction-icons'></box-icon></button>
-                                    <button type='submit' class='dislike interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='dislike' class='interaction-icons'></box-icon></button>
-                                    <button type='submit' class='comment interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='comment' class='interaction-icons'></box-icon></button>
-                                {% elif interaction.status == -1 and interaction.post == i.id %}
-                                    <button type='submit' class='like interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='like' class='interaction-icons'></box-icon></button>
-                                    <button type='submit' class='dislike interaction-button' name='{{ i.id }}'><box-icon color='red' type='solid' size='sm' name='dislike' class='interaction-icons'></box-icon></button>
-                                    <button type='submit' class='comment interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='comment' class='interaction-icons'></box-icon></button>
-                                {% else %}
-                                    <button type='submit' class='like interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='like' class='interaction-icons'></box-icon></button>
-                                    <button type='submit' class='dislike interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='dislike' class='interaction-icons'></box-icon></button>
-                                    <button type='submit' class='comment interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='comment' class='interaction-icons'></box-icon></button>
-                                {% endif %}
-                                
-
-                                <!--
                                 <button type='submit' class='like interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='like' class='interaction-icons'></box-icon></button>
                                 <button type='submit' class='dislike interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='dislike' class='interaction-icons'></box-icon></button>
                                 <button type='submit' class='comment interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='comment' class='interaction-icons'></box-icon></button>
-                            --></form>
+                            </form>
                         </div>
                         <div class='post-timestamp'>
                             {{ i.timestamp }}
                         </div>
                     </div>
                 </div>
-            {% endfor %}
             {% endfor %}
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
