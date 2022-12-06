@@ -56,13 +56,13 @@ function interactButtonHover(button){
                         button[i].childNodes[0].setAttribute("color", "red");
                         if (button == likeButton){
                             sendInteraction('like', postId);
-                            dislikeButton.childNodes[0].setAttribute("type", "regular");
-                            dislikeButton.childNodes[0].setAttribute("color", "white");
+                            dislikeButton[i].childNodes[0].setAttribute("type", "regular");
+                            dislikeButton[i].childNodes[0].setAttribute("color", "white");
                             
                         }else{
                             sendInteraction('dislike', postId);
-                            likeButton.childNodes[0].setAttribute("type", "regular");
-                            likeButton.childNodes[0].setAttribute("color", "white");
+                            likeButton[i].childNodes[0].setAttribute("type", "regular");
+                            likeButton[i].childNodes[0].setAttribute("color", "white");
                             
                         }
                     }else{
