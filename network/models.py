@@ -38,9 +38,10 @@ class Post(models.Model):
 
 
 class Likes(models.Model):
+    """ STATUS TRACKS THE USERS INTERACTION WITH LIKE/DISLIKE BUTTON USING -1, 0, 1 """
     username = models.CharField(default=None, max_length=24)
     post = models.IntegerField(default=None)
-    status = models.BooleanField(default=None)
+    status = models.IntegerField(default=0)
 
     def get_user(self):
         refrence = User.objects.filter(username=self.username).values()

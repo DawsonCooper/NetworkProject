@@ -21,7 +21,7 @@ class PostForm(forms.Form):
 
 
 @csrf_exempt
-def like(request, postId):
+def interaction_API(request, postId):
     try:
         post = Post.objects.get(id=postId)
     except Post.DoesNotExist:
@@ -37,6 +37,9 @@ def like(request, postId):
 
     if request.method == 'POST':
         # UPDATE THE LIKES MODEL TO TRACK WHO HAS LIKED THE POST
+        data = json.loads(request.body)
+        interaction = data.get('body')
+        print('interaction', interaction)
         updateLike = True
         try:
             updateLike = Likes.objects.get(post=postId, username=request.user)
@@ -44,58 +47,56 @@ def like(request, postId):
             like = Likes(
                 username=request.user,
                 post=postId,
-                status=True)
+                status=1)
             like.save()
+            return JsonResponse({'successful': 'Liked'})
 
         alreadyLiked = Likes.objects.filter(
             post=postId, username=request.user).values()
         print(alreadyLiked)
-        placeholder = False
-        if alreadyLiked[0]['status'] != True:
-            print('made it to elif')
-            placeholder = True
-            updateLike.status = True
-            updateLike.save()
-        else:
-            print('made it to else')
-            placeholder = False
-            updateLike.status = False
+        placeholder = -1
+        if interaction == 'like':
+            print('user liked')
+            placeholder = 1
+            updateLike.status = 1
             updateLike.save()
 
+        elif interaction == 'dislike':
+            print('user disliked')
+            placeholder = -1
+            updateLike.status = -1
+            updateLike.save()
+        else:
+            # THIS WILL BE IF THE BODY IS A COMMENT
+            pass
         # UPDATE POST MODEL TO TRACK NUM OF LIKES
         row = Post.objects.filter(id=postId).values()
         totalLikes = row[0]['totalLikes']
-        if placeholder == True:
+        if placeholder == 1:
             Post.objects.filter(id=postId).update(totalLikes=totalLikes + 1)
-        else:
+        elif placeholder == -1:
             Post.objects.filter(id=postId).update(totalLikes=totalLikes - 1)
-
+        else:
+            pass
     return JsonResponse({'successful': 'Liked'})
 
 
-def dislike(request, postId):
-    pass
-
-
-def comment(request, postId):
-    pass
-
-
 def index(request):
+    interaction = Likes.objects.all().filter(username=request.user).values()
     posts = Post.objects.all().values()
     posts = Paginator(posts, 10)
-    print(posts.page(1).object_list)
+
     if posts.num_pages <= 5:
         return render(request, "network/index.html", {
             'postForm': PostForm,
             'numPages': posts.num_pages,
             'posts': posts.page(1).object_list,
+            'interactions': interaction,
         })
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
 
         if form.is_valid():
-            print(form.cleaned_data['image'])
             post = Post(
                 username=request.user,
                 caption=form.cleaned_data['caption'],
@@ -106,12 +107,16 @@ def index(request):
             'postForm': PostForm,
             'numPages': posts.num_pages,
             'posts': posts.page(1).object_list,
+            'interactions': interaction,
+
         })
 
     return render(request, "network/index.html", {
         'postForm': PostForm,
         'numPages': posts.num_pages,
         'posts': posts.page(1).object_list,
+        'interactions': interaction,
+
     })
 
 

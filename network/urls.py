@@ -12,9 +12,8 @@ urlpatterns = [
     path("register", views.register, name="register"),
 
     # API routes
-    path('like/<int:postId>', views.like, name="like"),
-    path('dislike/<int:postId>', views.dislike, name="dislike"),
-    path('comment/<int:postId>', views.comment, name="comment"),
+    path('like/<int:postId>', views.interaction_API, name="like"),
+
     # MEDIA routes
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

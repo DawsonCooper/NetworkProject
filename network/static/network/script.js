@@ -5,7 +5,16 @@
     const likeButton = document.querySelectorAll(".like");
     const dislikeButton = document.querySelectorAll(".dislike");
     const commentButton = document.querySelectorAll(".comment");
-
+    function sendInteraction(body, postId){
+        fetch(`/like/${postId}`, {
+            method: 'POST',
+            body: JSON.stringify({
+                body: body,
+            })
+            }).then(response => response.json())
+            .then(result => console.log(result))
+            .catch(error => alert(error));
+    }
     let userImage;  
 // GLOABAL FUNCTIONS 
 function imagePreview() {
@@ -31,7 +40,7 @@ function interactButtonHover(button){
            button[i].childNodes[0].setAttribute("type", "solid");
         });
         button[i].addEventListener('mouseout', () => {
-            if(button[i].childNodes[0]._state.color === "red"){
+            if(button[i].childNodes[0].attributes.color.nodeValue == "red"){
                 button[i].childNodes[0].setAttribute("type", "solid");  
             }else{
                 button[i].childNodes[0].setAttribute("type", "regular");
@@ -40,21 +49,25 @@ function interactButtonHover(button){
        
             button[i].addEventListener('click', (e) =>{
                 e.preventDefault();
-                let postId = button[i].name;
+                postId = button[i].name;
                 if (button != commentButton){
-                    if (button[i].childNodes[0]._state.color != "red"){
+                    if (button[i].childNodes[0].attributes.color.nodeValue != "red"){
                         button[i].childNodes[0].setAttribute("type", "solid");
                         button[i].childNodes[0].setAttribute("color", "red");
+                        if (button == likeButton){
+                            sendInteraction('like', postId);
+                        }else{
+                            sendInteraction('dislike', postId);
+                        }
                     }else{
                         button[i].childNodes[0].setAttribute("color", 'white');
                         button[i].childNodes[0].setAttribute("type", 'solid');
                     }
+                }else{
+                    // TODO: WE WILL WANT TO REPLACE COMMENT WITH THE BODY FROM SOME TEXT FIELD
+                    sendInteraction('comment', postId);
                 }
-                fetch(`/like/${postId}`, {
-                    method: 'POST',
-                }).then(response => response.json())
-                .then(result => console.log(result))
-                .catch(error => console.log(error));
+                
             })
         }}
 
