@@ -1,0 +1,94 @@
+{% extends "network/layout.html" %}
+{% block body %}
+<div id='profile-body'>
+    <div id='profile-user-info'>
+        <div id='header'>
+            <div id='user-header-left'>
+                <box-icon name='user-circle' size='100px' color='white'></box-icon>
+                <h2 style='color: rgb(230, 230, 230)'>{{ userInfo.name }}</h2>
+                <h4 >@{{ userInfo.username }}</h4>
+            </div>
+            <div id='user-header-right'>
+                {% if userInfo.is_active  %}
+                    <h6>Online</h6>
+                {% else %}
+                    <h6>Offline</h6>
+                {% endif %}
+                
+                <h6> EST. {{ userInfo.date_joined }}</h6>
+            </div>
+        </div>
+        {% if userInfo.bio != '' %}
+        <div id='user-header-center'>
+            <p>{{ userInfo.bio }}</p>
+        </div>
+        {% endif %}
+    
+    <div id='user-posts'>
+        {% for post in userPosts %}
+        <div class='profile-single-post'>
+            <div class='profile-sp-left'>
+                <div class='profile-sp-caption'>
+                    {{ post.caption }}
+                </div>
+                <div class='interactions'>
+                    <form class='interaction-form' method='POST'>
+                        {% csrf_token %}
+                        <div class='interaction-form'>
+                            <button type='submit' class='like interaction-button' name='{{ post.id }}'><box-icon color='white' size='sm' name='like' class='interaction-icons'></box-icon></button>
+                            <p>{{ post.totalLikes }}</p>
+                        </div>
+                        <div class='interaction-form'>
+                            <button type='submit' class='dislike interaction-button' name='{{ post.id }}'><box-icon color='white' size='sm' name='dislike' class='interaction-icons'></box-icon></button>
+                            <button type='submit' class='comment interaction-button' name='{{ post.id }}'><box-icon color='white' size='sm' name='comment' class='interaction-icons'></box-icon></button>
+                            <p>{{ post.totalComments }}</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class='profile-sp-right'>
+                <div class='edit-post'>
+                    <button type="button" id='edit-post-button' class="btn btn-dark" data-toggle="modal" data-target="#modalBackdrop" data-whatever="@getbootstrap">
+                        <box-icon animation='none' id='newPostSvg' name='plus-circle' size='30px' color="rgb(230, 230, 230)"></box-icon></button>
+                
+                        <div class="modal fade" id="modalBackdrop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background-color: rgba(125, 125, 125, 0.25)">
+                            <div class="modal-dialog" role="document" tabindex='5'>
+                            <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">New Post</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><box-icon name='x-circle' color='white' size='sm'></box-icon></span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                        <form action='/' method='POST'>
+                            {% csrf_token %}
+                          <div id='textarea-div' class="form-group">
+                            {{ postForm.caption }}            
+                          
+                            <div id='image-container'>
+                                <label for='id_image' id='image-label'><box-icon name='image-add' color='white'></box-icon></label>
+                                <div id='image-input'>{{ postForm.image }}</div>
+                            </div>
+                        </div>
+                              </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" value='Submit'>
+                     </form>
+                     </div>
+                    </div>
+                  </div>
+                </div>
+                </div>
+                {{ post.timestamp }}
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+</div>
+</div>
+{% endblock %}

@@ -131,7 +131,7 @@ textarea:focus-visible{
     margin-bottom: 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
-#index-body{
+#index-body {
     display: flex;
     justify-content: center;
     height: 100vh;
@@ -152,6 +152,24 @@ textarea:focus-visible{
     padding: .5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
+#edit-post-button{
+    display: flex;
+    background-color: black;
+    justify-content: center !important;
+    align-items: center !important;;
+    height: 30px;
+    width: 30px;
+    border-color: black;
+    border-radius: 50%;
+}
+/* STYLING FOR THE INTERACTION ICONS AND BUTTONS */
+.interaction-form{
+    display: flex;
+    align-items: center;
+}
+.interaction-form p{
+    margin-bottom: 0px;
+}
 .interaction-button{
     background-color: black;
     border: none;
@@ -162,4 +180,60 @@ textarea:focus-visible{
 }
 .interaction-icons{
     margin: 5px;
+}
+
+/* PROFILE PAGE */
+#profile-body{
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    
+}
+
+#profile-user-info{
+    margin-top: 0px;
+    height: 100vh;
+    width: 65%;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    
+}
+#header{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+#user-header-left{
+    padding: 1%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+#user-header-right{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: right;
+    padding: 1%;
+    padding-top: 2%;
+}
+
+#user-posts{
+
+}
+.profile-single-post{
+    display: flex;
+    justify-content: space-between;
+    padding: 1%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.profile-post-footer{
+
+}
+.profile-post-right{
+
+}
+.profile-sp-caption{
+    font-size: 1.2rem;
 }

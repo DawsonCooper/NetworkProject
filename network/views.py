@@ -72,6 +72,7 @@ def interaction_API(request, postId):
         updateLike.save()
         if statusValue == 0 and interaction != 'undo':
             # THIS WILL BE FOR OUT COMMENTS AND WE WILL BE MODIFYING THE COMMMENT MODEL
+
             pass
         # UPDATE POST MODEL TO TRACK NUM OF LIKES
         row = Post.objects.filter(id=postId).values()
@@ -125,6 +126,18 @@ def index(request):
     })
 
 
+def profile(request):
+    userPosts = Post.objects.filter(username=request.user).all().values()
+    userInfo = User.objects.filter(username=request.user).values()
+    print(userPosts)
+
+    return render(request, "network/profile.html", {
+        'postForm': PostForm,
+        'userPosts': userPosts,
+        'userInfo': userInfo[0]
+    })
+
+
 def login_view(request):
     if request.method == "POST":
 
@@ -154,6 +167,7 @@ def logout_view(request):
 def register(request):
     if request.method == "POST":
         username = request.POST["username"]
+        name = request.POST["name"]
         email = request.POST["email"]
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -170,7 +184,8 @@ def register(request):
 
         # Attempt to create new user
         try:
-            user = User.objects.create_user(username, email, password)
+            user = User.objects.create_user(
+                username, email, password, name, bio)
             user.save()
             if profilePic != None:
                 test = User.objects.filter(username=username, password=password).update(

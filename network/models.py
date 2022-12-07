@@ -3,7 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    first_name = models.CharField(max_length=24, default="None")
+    name = models.CharField(max_length=24, default="Incognito")
     bio = models.TextField(default="")
     profilePicture = models.ImageField(
         upload_to="network/static/images/", default=False, blank=True, null=True)
