@@ -61,10 +61,16 @@ def get_user_interactions(request):
 
 @csrf_exempt
 def update_post(request, postId):
-
-    caption = json.loads(request.body)
-    caption = caption.get('body')
-    Post.objects.filter(id=postId).update(caption=caption)
+    posts = Post.objects.all().values()
+    posts = posts.order_by("-timestamp").all()
+    posts = Paginator(posts, 10)
+    if request.method == 'PUT':
+        data = json.loads(request.body)
+        print(data)
+        caption = data.get('body')
+        print(caption)
+        Post.objects.filter(id=postId).update(caption=caption)
+        return JsonResponse({'newText': caption, 'postId': postId}, safe=False)
 
 
 @csrf_exempt

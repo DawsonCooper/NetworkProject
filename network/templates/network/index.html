@@ -39,7 +39,7 @@
                                       </div>
                               <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <input type="submit" value='Submit'>
+                                <input id='edit-sub' type="submit" value='Submit'>
                              </form>
                              </div>
                             </div>
@@ -77,15 +77,19 @@
                 </div>
             </div>
             {% endfor %}
+        
             <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                  <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                <ul id='paginator-buttons' class="pagination">
+                  <div>
+                    <li class="disabled">
+                    <a id='previous-page' href="/" tabindex="-1"><box-icon animation='fade-left-hover' color="rgb(230, 230, 230)" name='left-arrow-alt' ></box-icon></a>
                   </li>
-
-                  <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
+                </div>
+                <div>
+                  <li class="">
+                    <a id='next-page' href="/"><box-icon animation='fade-right-hover' color="rgb(230, 230, 230)" name='right-arrow-alt'></box-icon></a>
                   </li>
+                </div>
                 </ul>
               </nav>
         </div>

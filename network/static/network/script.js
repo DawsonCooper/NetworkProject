@@ -1,11 +1,14 @@
 // GLOBAL ELEMENTS
-    const imageInput = document.querySelector("#id_image");
-    const imageLabel = document.querySelector("#image-label");
-    const imageContainer = document.querySelector("#image-container");
-    const likeButton = document.querySelectorAll(".like");
-    const dislikeButton = document.querySelectorAll(".dislike");
-    const commentButton = document.querySelectorAll(".comment");
-    function sendInteraction(body, postId){
+const imageInput = document.querySelector("#id_image");
+const imageLabel = document.querySelector("#image-label");
+const imageContainer = document.querySelector("#image-container");
+const likeButton = document.querySelectorAll(".like");
+const dislikeButton = document.querySelectorAll(".dislike");
+const commentButton = document.querySelectorAll(".comment");    
+const editButtonArr = document.querySelectorAll('#editPostButton');
+const editForms = document.querySelectorAll('#editPostForm');
+const editSubButtons = document.querySelectorAll('#edit-sub');
+function sendInteraction(body, postId){
         fetch(`/like/${postId}`, {
             method: 'POST',
             body: JSON.stringify({
@@ -78,7 +81,7 @@ function interactButtonHover(button){
             })
         }}
 function get_post_data(postId,caption) {
-    console.log(caption);
+    
     fetch(`/get_post_data/${postId}`, {
         method: 'GET'
     }).then(response => response.json())
@@ -86,11 +89,15 @@ function get_post_data(postId,caption) {
     .catch(error => alert(error));
 }
 
-
+function submit_post_modification(postId, caption) {
+    fetch(`update_post/${postId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body: caption })
+    });
+}
 
 document.addEventListener('DOMContentLoaded', function() {
-    const editButtonArr = document.querySelectorAll('#editPostButton');
-    const editForms = document.querySelectorAll('#editPostForm');
 
     for(let i = 0; i < editButtonArr.length; i++){
         for (let j = 0; j < editForms.length; j++){
@@ -100,6 +107,16 @@ document.addEventListener('DOMContentLoaded', function() {
             })
         }
     }
+
+    editForms.forEach(form => {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault()
+            let id = form.lastElementChild.id;
+            console.log('id: ' +id)
+            let caption = form.childNodes[3].childNodes[1].value;
+            submit_post_modification(id, caption);
+        })
+    });
     
     interactButtonHover(likeButton)
     interactButtonHover(dislikeButton)

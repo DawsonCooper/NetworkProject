@@ -138,12 +138,12 @@ textarea:focus-visible{
 #index-body {
     display: flex;
     justify-content: center;
-    height: 100vh;
+    
     width: 100%;
 }
 #post-container{
     margin-top: 0px;;
-    height: 100vh;
+    height: calc(100% - 38px);
     width: 45%;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
     border-right: 1px solid rgba(255, 255, 255, 0.1);
@@ -180,6 +180,14 @@ textarea:focus-visible{
     border-color: black;
     border-radius: 50%;
 }
+#paginator-buttons{
+    display: flex;
+    margin: 1% !important;
+    margin-left: 2% !important;
+    margin-right: 2% !important;
+    justify-content: space-between;
+}
+
 /* STYLING FOR THE INTERACTION ICONS AND BUTTONS */
 .interaction-form{
     display: flex;
