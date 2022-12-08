@@ -15,9 +15,41 @@ from django.core.paginator import Paginator
 class PostForm(forms.Form):
     caption = forms.CharField(widget=forms.Textarea(attrs={
         'cols': '40',
-        'placeholder': 'Your two cents'
+
     }))
     image = forms.ImageField(required=False)
+
+# API VIEWS
+
+
+@csrf_exempt
+def get_post_data(request, postId):
+    postData = Post.objects.filter(id=postId).values()
+
+    ready = postData[0]['caption']
+    print(ready)
+    # return JsonResponse(caption=postData.caption, safe=False)
+    return JsonResponse({
+        'caption': ready
+    })
+
+
+@csrf_exempt
+def create_realationship(request, user):
+    """WE COULD POSSIBLY RECIEVE 3 REQUESTS POST TO CREATE A NEW REALATIONSHIP
+        PUT WE WILL WANT TO DELETE THE ENTIRE ROW OF A REALATIONSHIP
+        GET WE WILL WANT TO RETURN A GIVEN USERS FOLLOWERS AND FOLLOWING 
+    """
+    if request.method == 'POST':
+        pass
+
+    if request.method == 'GET':
+        pass
+
+    if request.method == 'PUT':
+        pass
+
+    pass
 
 
 @csrf_exempt
@@ -25,6 +57,14 @@ def get_user_interactions(request):
     interactions = Likes.objects.filter(username=request.user)
 
     return JsonResponse([interaction.serialize() for interaction in interactions], safe=False)
+
+
+@csrf_exempt
+def update_post(request, postId):
+
+    caption = json.loads(request.body)
+    caption = caption.get('body')
+    Post.objects.filter(id=postId).update(caption=caption)
 
 
 @csrf_exempt
@@ -65,9 +105,6 @@ def interaction_API(request, postId):
             like.save()
             return JsonResponse({'successful': 'Liked'})
 
-        alreadyLiked = Likes.objects.filter(
-            post=postId, username=request.user).values()
-        print(alreadyLiked)
         updateLike.status = statusValue
         updateLike.save()
         if statusValue == 0 and interaction != 'undo':
@@ -91,17 +128,10 @@ def index(request):
     posts = Post.objects.all().values()
     posts = posts.order_by("-timestamp").all()
     posts = Paginator(posts, 10)
+    print(request)
 
-    if posts.num_pages <= 5:
-        return render(request, "network/index.html", {
-            'postForm': PostForm,
-            'numPages': posts.num_pages,
-            'posts': posts.page(1).object_list,
-
-        })
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
-
         if form.is_valid():
             post = Post(
                 username=request.user,
@@ -113,10 +143,14 @@ def index(request):
             'postForm': PostForm,
             'numPages': posts.num_pages,
             'posts': posts.page(1).object_list,
-
+        })
+    if posts.num_pages <= 5:
+        return render(request, "network/index.html", {
+            'postForm': PostForm,
+            'numPages': posts.num_pages,
+            'posts': posts.page(1).object_list,
 
         })
-
     return render(request, "network/index.html", {
         'postForm': PostForm,
         'numPages': posts.num_pages,
@@ -126,10 +160,9 @@ def index(request):
     })
 
 
-def profile(request):
-    userPosts = Post.objects.filter(username=request.user).all().values()
-    userInfo = User.objects.filter(username=request.user).values()
-    print(userPosts)
+def profile(request, username):
+    userPosts = Post.objects.filter(username=username).all().values()
+    userInfo = User.objects.filter(username=username).values()
 
     return render(request, "network/profile.html", {
         'postForm': PostForm,

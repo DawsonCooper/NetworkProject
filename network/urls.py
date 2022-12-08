@@ -10,13 +10,16 @@ urlpatterns = [
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
-    path("profile", views.profile, name="profile"),
+    path("profile/<str:username>", views.profile, name="profile"),
 
     # API routes
     path('like/<int:postId>', views.interaction_API, name="like"),
     path("get_user_interactions", views.get_user_interactions,
          name="get_user_interactions"),
-    # MEDIA routes
+    path('create_realationship/<user>', views.create_realationship,
+         name="create_realationship"),
+    path('get_post_data/<int:postId>', views.get_post_data, name="get_post_data")
 ]
+# MEDIA routes
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()

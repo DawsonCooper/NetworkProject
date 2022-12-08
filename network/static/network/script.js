@@ -77,12 +77,30 @@ function interactButtonHover(button){
                 
             })
         }}
-
-
+function get_post_data(postId,caption) {
+    console.log(caption);
+    fetch(`/get_post_data/${postId}`, {
+        method: 'GET'
+    }).then(response => response.json())
+    .then(result => caption.innerText = result.caption)
+    .catch(error => alert(error));
+}
 
 
 
 document.addEventListener('DOMContentLoaded', function() {
+    const editButtonArr = document.querySelectorAll('#editPostButton');
+    const editForms = document.querySelectorAll('#editPostForm');
+
+    for(let i = 0; i < editButtonArr.length; i++){
+        for (let j = 0; j < editForms.length; j++){
+
+            editButtonArr[i].addEventListener('click', () => {
+                get_post_data(editForms[i].lastElementChild.id, editForms[j].childNodes[3].childNodes[1])
+            })
+        }
+    }
+    
     interactButtonHover(likeButton)
     interactButtonHover(dislikeButton)
     interactButtonHover(commentButton)
@@ -115,5 +133,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#newPostButton').addEventListener('mouseout', () => {
         document.querySelector('#newPostSvg').setAttribute("animation", "none"); 
     });
+    const editButton = document.querySelectorAll('#editPostButton');
+    editButton.forEach(button => {
 
-    })
+        button.addEventListener('mouseover', () => {
+            button.childNodes[0].nextSibling.setAttribute("animation", "tada"); 
+    });
+        button.addEventListener('mouseout', () => {
+            button.childNodes[0].nextSibling.setAttribute("animation", "none"); 
+        });
+    })        
+});

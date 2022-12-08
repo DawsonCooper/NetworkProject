@@ -8,10 +8,46 @@
             {% for i in posts %}
             <div class='single-post-container' id='{{ i.id }}'>
                 <div class='user-info'>
-                <!--Profile pic and username once foreinkey works and 
-                    if statement if user == request.user display an edit button on seperate side -->
-                    <box-icon id='profilePicIcon' name='user-circle' size='sm' color='rgb(230, 230, 230)'></box-icon>{{ i.username }}
-                </div>
+   
+                    <a class='profile-link' href='/profile/{{ i.username }}'><div id='{{ i.username }}' class='index-user-info-top'><box-icon id='profilePicIcon' name='user-circle' size='sm' color='rgb(230, 230, 230)'></box-icon>{{ i.username }}</div></a>
+                    {% if i.username == user.username %}
+                        
+                        <div class='edit-post'>
+                            <button type="button" id='editPostButton' class="btn btn-dark" data-toggle="modal" data-target="#editPostPopup" data-whatever="@getbootstrap">
+                                <box-icon animation='none' id='editPostSvg' name='plus-circle' size='30px' color="rgb(230, 230, 230)"></box-icon></button>
+                        
+                                <div class="modal fade" id="editPostPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background-color: rgba(125, 125, 125, 0.25)">
+                                    <div class="modal-dialog" role="document" tabindex='5'>
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">New Post</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true"><box-icon name='x-circle' color='white' size='sm'></box-icon></span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                <form id='editPostForm' action='/' method='POST'>
+                                    {% csrf_token %}
+                                  <div id='{{ i.id }}' class="form-group edit-textarea-div">
+                                    {{ postForm.caption }}          
+                                  
+                                    <div id='image-container'>
+                                        <label for='id_image' id='image-label'><box-icon name='image-add' color='white'></box-icon></label>
+                                        <div id='image-input'>{{ postForm.image }}</div>
+                                    </div>
+                                </div>
+                                      </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" value='Submit'>
+                             </form>
+                             </div>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                    {% endif %}
+                    </div>
                 <div class='post-content'>
                     <p>
                         {{ i.caption }}
@@ -35,40 +71,7 @@
                         </form>
                     </div>
                     <div class='post-timestamp'>
-                        <div class='edit-post'>
-                            <button type="button" id='edit-post-button' class="btn btn-dark" data-toggle="modal" data-target="#modalBackdrop" data-whatever="@getbootstrap">
-                                <box-icon animation='none' id='newPostSvg' name='plus-circle' size='30px' color="rgb(230, 230, 230)"></box-icon></button>
-                        
-                                <div class="modal fade" id="modalBackdrop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background-color: rgba(125, 125, 125, 0.25)">
-                                    <div class="modal-dialog" role="document" tabindex='5'>
-                                    <div class="modal-content">
-                                    <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">New Post</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true"><box-icon name='x-circle' color='white' size='sm'></box-icon></span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                <form action='/' method='POST'>
-                                    {% csrf_token %}
-                                  <div id='textarea-div' class="form-group">
-                                    {{ postForm.caption }}            
-                                  
-                                    <div id='image-container'>
-                                        <label for='id_image' id='image-label'><box-icon name='image-add' color='white'></box-icon></label>
-                                        <div id='image-input'>{{ postForm.image }}</div>
-                                    </div>
-                                </div>
-                                      </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <input type="submit" value='Submit'>
-                             </form>
-                             </div>
-                            </div>
-                          </div>
-                        </div>
-                        </div>
+
                         {{ i.timestamp }}
                     </div>
                 </div>

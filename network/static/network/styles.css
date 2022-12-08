@@ -58,7 +58,8 @@ strong{
     
 }
 /* STYLING OF THE POST FORM */
-#newPostButton{
+#newPostButton,
+#editPostButton {
     display: flex;
     background-color: black;
     justify-content: center !important;
@@ -68,7 +69,8 @@ strong{
     border-color: black;
     border-radius: 50%;
 }
-#newPostButton p {
+#newPostButton p,
+#editPostButton p {
     margin-bottom: 0;
     margin-left: 5px;
 }
@@ -112,7 +114,9 @@ img {
     color: white;
     
 }
-#textarea-div{
+#textarea-div,
+#edit-textarea-div
+{
     text-align: left;
 }
 textarea{
@@ -147,6 +151,20 @@ textarea:focus-visible{
 .user-info{
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+.profile-link{
+    text-decoration: none;
+    color: rgb(180, 178, 178);
+}
+.profile-link:hover{
+    text-decoration: none;
+    color: white;
+}
+.index-user-info-top{
+    display: flex;
+    align-items: center;
+    cursor: pointer
 }
 .single-post-container{
     padding: .5rem;

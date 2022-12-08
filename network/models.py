@@ -9,6 +9,11 @@ class User(AbstractUser):
         upload_to="network/static/images/", default=False, blank=True, null=True)
 
 
+class Realationships(models.Model):
+    followerId = models.IntegerField()
+    followingId = models.IntegerField()
+
+
 class Post(models.Model):
     username = models.CharField(
         default='None', max_length=24, null=True, blank=True)

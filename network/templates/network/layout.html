@@ -57,15 +57,11 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                            <form action='/' method='POST'>
+                            <form action='' method='POST'>
                                 {% csrf_token %}
                               <div id='textarea-div' class="form-group">
                                 {{ postForm.caption }}            
                               
-                                <div id='image-container'>
-                                    <label for='id_image' id='image-label'><box-icon name='image-add' color='white'></box-icon></label>
-                                    <div id='image-input'>{{ postForm.image }}</div>
-                                </div>
                             </div>
                                   </div>
                           <div class="modal-footer">
