@@ -240,6 +240,7 @@ textarea:focus-visible{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: flex-end;
     text-align: right;
     padding: 1%;
     padding-top: 2%;

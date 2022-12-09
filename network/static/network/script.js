@@ -17,6 +17,9 @@ function sendInteraction(body, postId){
             }).then(response => response.json())
             .then(result => console.log(result))
             .catch(error => alert(error));
+            setTimeout(() => {
+                update_interaction_count()
+            }, 100);
     }
     let userImage;  
 // GLOABAL FUNCTIONS 
@@ -54,6 +57,7 @@ function interactButtonHover(button){
                 e.preventDefault();
                 postId = button[i].name;
                 if (button != commentButton){
+                    
                     if (button[i].childNodes[0].attributes.color.nodeValue != "red"){
                         button[i].childNodes[0].setAttribute("type", "solid");
                         button[i].childNodes[0].setAttribute("color", "red");
@@ -96,6 +100,42 @@ function submit_post_modification(postId, caption) {
         body: JSON.stringify({ body: caption })
     });
 }
+function update_interaction_count(){
+    fetch(`/update_interaction_count`, {
+        method: 'GET',
+        })
+        .then(response => response.json())
+        .then((result) => {
+            console.log(result);
+            for (let i = 0; i < result.length; i++) {
+                likeCount = document.querySelector(`#p-${result[i].id}`);
+                console.log(likeCount);
+                likeCount.innerText = result[i].totalLikes
+            }
+        })
+        .catch(error => console.log(error));
+    }
+function get_user_interactions(){
+    fetch(`/get_user_interactions`, {
+        method: 'GET',
+        })
+        .then(response => response.json())
+        .then((result) => {
+            for (let i = 0; i < result.length; i++){
+
+                let arrOfButtons = document.querySelectorAll(`[name="${result[i].post}"]`);
+
+                if(result[i].status == 1){
+                    arrOfButtons[0].childNodes[0].setAttribute('color', 'red');
+                    arrOfButtons[0].childNodes[0].setAttribute('type', 'solid');
+                }else if(result[i].status == -1){
+                    arrOfButtons[1].childNodes[0].setAttribute('color', 'red');
+                    arrOfButtons[1].childNodes[0].setAttribute('type', 'solid'); 
+                }
+            }
+        })
+        .catch(error => console.log(error));
+    }
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -117,29 +157,11 @@ document.addEventListener('DOMContentLoaded', function() {
             submit_post_modification(id, caption);
         })
     });
-    
-    interactButtonHover(likeButton)
-    interactButtonHover(dislikeButton)
-    interactButtonHover(commentButton)
+    get_user_interactions();
+    interactButtonHover(likeButton);
+    interactButtonHover(dislikeButton);
+    interactButtonHover(commentButton);
     let interactionsArr;
-    fetch(`/get_user_interactions`, {
-        method: 'GET',
-        }).then(response => response.json())
-        .then(result => {
-            for (let i = 0; i < result.length; i++){
-                console.log(result);
-                let arrOfButtons = document.querySelectorAll(`[name="${result[i].post}"]`);
-                console.log(arrOfButtons)
-                if(result[i].status == 1){
-                    arrOfButtons[0].childNodes[0].setAttribute('color', 'red');
-                    arrOfButtons[0].childNodes[0].setAttribute('type', 'solid');
-                }else if(result[i].status == -1){
-                    arrOfButtons[1].childNodes[0].setAttribute('color', 'red');
-                    arrOfButtons[1].childNodes[0].setAttribute('type', 'solid'); 
-                }
-            }
-        })
-        .catch(error => console.log(error));
 
     if (imageInput){
         imageInput.addEventListener("change", imagePreview);

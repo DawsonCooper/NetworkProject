@@ -18,11 +18,19 @@ class Post(models.Model):
     username = models.CharField(
         default='None', max_length=24, null=True, blank=True)
     caption = models.TextField(default="")
-    image = models.ImageField(
-        upload_to="network/static/images/", default=False, blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     totalLikes = models.IntegerField(default=0)
     totalComments = models.IntegerField(default=0)
+
+    def serialize(self):
+        return {
+            'id': self.pk,
+            'username': self.username,
+            'caption': self.caption,
+            'timestamp': self.timestamp,
+            'totalLikes': self.totalLikes,
+            'totalComments': self.totalComments
+        }
 
     def get_user(self):
         refrence = User.objects.filter(username=self.username).values()
@@ -30,16 +38,6 @@ class Post(models.Model):
 
     def total_interactions(self):
         return {'interactions': self.totalLikes + self.totalComments}
-
-    def serailize(self):
-        return {
-            'username': self.username,
-            'caption': self.caption,
-            'image': self.image,
-            'timestamp': self.timestamp,
-            'totalLikes': self.totalLikes,
-            'totalComments': self.totalComments
-        }
 
 
 class Likes(models.Model):

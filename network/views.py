@@ -38,7 +38,7 @@ def get_post_data(request, postId):
 def create_realationship(request, user):
     """WE COULD POSSIBLY RECIEVE 3 REQUESTS POST TO CREATE A NEW REALATIONSHIP
         PUT WE WILL WANT TO DELETE THE ENTIRE ROW OF A REALATIONSHIP
-        GET WE WILL WANT TO RETURN A GIVEN USERS FOLLOWERS AND FOLLOWING 
+        GET WE WILL WANT TO RETURN A GIVEN USERS FOLLOWERS AND FOLLOWING
     """
     if request.method == 'POST':
         pass
@@ -60,6 +60,12 @@ def get_user_interactions(request):
 
 
 @csrf_exempt
+def update_interaction_count(request):
+    posts = Post.objects.all()
+    return JsonResponse([post.serialize() for post in posts], safe=False)
+
+
+@ csrf_exempt
 def update_post(request, postId):
     posts = Post.objects.all().values()
     posts = posts.order_by("-timestamp").all()
@@ -73,19 +79,21 @@ def update_post(request, postId):
         return JsonResponse({'newText': caption, 'postId': postId}, safe=False)
 
 
-@csrf_exempt
+@ csrf_exempt
 def interaction_API(request, postId):
     try:
         post = Post.objects.get(id=postId)
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post no longer exists"})
     if request.method == 'GET':
-        likes = Likes.objects.filter(post=postId).values()
+        likes = Likes.objects.filter(post=postId)
         for like in likes:
             like.serialize()
             user = like.get_user()
             like.append(user)
         print(likes)
+        for like in likes:
+            like.serialize()
         return JsonResponse(likes)
 
     if request.method == 'POST':
@@ -94,15 +102,17 @@ def interaction_API(request, postId):
         interaction = data.get('body')
         print('interaction', interaction)
         updateLike = True
-        statusValue = 0
+        statusValue = 3
         if interaction == 'like':
+
             statusValue = 1
         elif interaction == 'dislike':
             statusValue = -1
         elif interaction == 'undo':
             statusValue = 0
         try:
-            updateLike = Likes.objects.get(post=postId, username=request.user)
+            updateLike = Likes.objects.get(
+                post=postId, username=request.user)
         except Likes.DoesNotExist:
             like = Likes(
                 username=request.user,
@@ -113,7 +123,7 @@ def interaction_API(request, postId):
 
         updateLike.status = statusValue
         updateLike.save()
-        if statusValue == 0 and interaction != 'undo':
+        if interaction == 'comment':
             # THIS WILL BE FOR OUT COMMENTS AND WE WILL BE MODIFYING THE COMMMENT MODEL
 
             pass
@@ -121,11 +131,12 @@ def interaction_API(request, postId):
         row = Post.objects.filter(id=postId).values()
         totalLikes = row[0]['totalLikes']
         if statusValue == 1:
-            Post.objects.filter(id=postId).update(totalLikes=totalLikes + 1)
-        elif statusValue == -1:
-            Post.objects.filter(id=postId).update(totalLikes=totalLikes - 1)
-        else:
-            pass
+            Post.objects.filter(id=postId).update(
+                totalLikes=totalLikes + 1)
+        elif statusValue == -1 or statusValue == 0:
+            Post.objects.filter(id=postId).update(
+                totalLikes=totalLikes - 1)
+
     return JsonResponse({'successful': 'Liked'})
 
 

@@ -9,12 +9,12 @@
                 <h4 >@{{ userInfo.username }}</h4>
             </div>
             <div id='user-header-right'>
-                {% if userInfo.is_active  %}
-                    <h6>Online</h6>
+                <!-- we will want to user an if else to see if the active user is currently following to show a unfollow/follow button -->
+                {% if request.user == userInfo.username %}
+                <!-- Something to replace the follow/unfollow button -->
                 {% else %}
-                    <h6>Offline</h6>
+                <box-icon type='solid' size='lg' color='white' name='user-plus'></box-icon>          
                 {% endif %}
-                
                 <h6> EST. {{ userInfo.date_joined }}</h6>
             </div>
         </div>
@@ -36,12 +36,12 @@
                         {% csrf_token %}
                         <div class='interaction-form'>
                             <button type='submit' class='like interaction-button' name='{{ post.id }}'><box-icon color='white' size='sm' name='like' class='interaction-icons'></box-icon></button>
-                            <p>{{ post.totalLikes }}</p>
+                            <p id='p-{{ post.id }}'>{{ post.totalLikes }}</p>
                         </div>
                         <div class='interaction-form'>
                             <button type='submit' class='dislike interaction-button' name='{{ post.id }}'><box-icon color='white' size='sm' name='dislike' class='interaction-icons'></box-icon></button>
                             <button type='submit' class='comment interaction-button' name='{{ post.id }}'><box-icon color='white' size='sm' name='comment' class='interaction-icons'></box-icon></button>
-                            <p>{{ post.totalComments }}</p>
+                            <p id='p-{{ post.id }}'>{{ post.totalComments }}</p>
                         </div>
                     </form>
                 </div>

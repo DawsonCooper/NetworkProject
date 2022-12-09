@@ -20,6 +20,8 @@ urlpatterns = [
          name="create_realationship"),
     path('get_post_data/<int:postId>', views.get_post_data, name="get_post_data"),
     path('update_post/<int:postId>', views.update_post, name="update_post"),
+    path('update_interaction_count', views.update_interaction_count,
+         name="update_interaction_count"),
 ]
 # MEDIA routes
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

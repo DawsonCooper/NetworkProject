@@ -45,7 +45,7 @@
                             </div>
                           </div>
                         </div>
-                        </div>
+                        </div> 
                     {% endif %}
                     </div>
                 <div class='post-content'>
@@ -61,12 +61,12 @@
                             {% csrf_token %}
                             <div class='interaction-form'>
                                 <button type='submit' class='like interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='like' class='interaction-icons'></box-icon></button>
-                                <p>{{ i.totalLikes }}</p>
+                                <p id='p-{{ i.id }}'>{{ i.totalLikes }}</p>
                             </div>
                             <div class='interaction-form'>
                                 <button type='submit' class='dislike interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='dislike' class='interaction-icons'></box-icon></button>
                                 <button type='submit' class='comment interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='comment' class='interaction-icons'></box-icon></button>
-                                <p>{{ i.totalComments }}</p>
+                                <p id='p-{{ i.id }}'>{{ i.totalComments }}</p>
                             </div>
                         </form>
                     </div>
