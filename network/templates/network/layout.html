@@ -22,7 +22,7 @@
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                 
-                        <a id="profile-pic" class="nav-link" href="#">
+                        <a id="profile-pic" class="nav-link" href="/profile/{{ user.username }}">
                             {% if user.profilePicture != 'False' %}
                                 <img src="network/static/images/{{ user.profilePicture }}" id='navbar-profilePic'>
                             {% else %}

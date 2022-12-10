@@ -8,6 +8,19 @@ const commentButton = document.querySelectorAll(".comment");
 const editButtonArr = document.querySelectorAll('#editPostButton');
 const editForms = document.querySelectorAll('#editPostForm');
 const editSubButtons = document.querySelectorAll('#edit-sub');
+const followButton = document.querySelector('#follow-button');
+
+function getPosts(postId){
+    fetch(`get_posts/${postId}`, {
+        method: 'GET',
+    }).then(response => response.json())
+    .then(result => {
+        console.log(result)
+        document.querySelector(`#para_${result.postId}`).innerText = result.caption;
+        document.querySelector('#close-edit-modal').click();
+    })
+    .catch(error => console.log(error));
+}
 function sendInteraction(body, postId){
         fetch(`/like/${postId}`, {
             method: 'POST',
@@ -23,6 +36,7 @@ function sendInteraction(body, postId){
     }
     let userImage;  
 // GLOABAL FUNCTIONS 
+/*
 function imagePreview() {
     const file = imageInput.files[0];
     if (file) {
@@ -39,6 +53,7 @@ function imagePreview() {
         return;
     }
 }
+*/
 function interactButtonHover(button){
     for(let i=0; i < button.length; i++){
         
@@ -98,7 +113,10 @@ function submit_post_modification(postId, caption) {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ body: caption })
-    });
+    }).then(
+        setTimeout(() => {
+        getPosts(postId)
+    }, 100))
 }
 function update_interaction_count(){
     fetch(`/update_interaction_count`, {
@@ -109,8 +127,10 @@ function update_interaction_count(){
             console.log(result);
             for (let i = 0; i < result.length; i++) {
                 likeCount = document.querySelector(`#p-${result[i].id}`);
-                console.log(likeCount);
-                likeCount.innerText = result[i].totalLikes
+                if (likeCount){
+                    console.log(likeCount);
+                    likeCount.innerText = result[i].totalLikes
+                }
             }
         })
         .catch(error => console.log(error));
@@ -122,9 +142,9 @@ function get_user_interactions(){
         .then(response => response.json())
         .then((result) => {
             for (let i = 0; i < result.length; i++){
-
+                console.log(result[i])
                 let arrOfButtons = document.querySelectorAll(`[name="${result[i].post}"]`);
-
+                console.log(arrOfButtons)
                 if(result[i].status == 1){
                     arrOfButtons[0].childNodes[0].setAttribute('color', 'red');
                     arrOfButtons[0].childNodes[0].setAttribute('type', 'solid');
@@ -162,10 +182,11 @@ document.addEventListener('DOMContentLoaded', function() {
     interactButtonHover(dislikeButton);
     interactButtonHover(commentButton);
     let interactionsArr;
-
+    /*
     if (imageInput){
         imageInput.addEventListener("change", imagePreview);
     }
+    */
     document.querySelector('#newPostButton').addEventListener('mouseover', () => {
     document.querySelector('#newPostSvg').setAttribute("animation", "tada"); 
     });

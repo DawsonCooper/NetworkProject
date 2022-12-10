@@ -10,11 +10,13 @@
             </div>
             <div id='user-header-right'>
                 <!-- we will want to user an if else to see if the active user is currently following to show a unfollow/follow button -->
-                {% if request.user == userInfo.username %}
+                {% if user.username == userInfo.username %}
                 <!-- Something to replace the follow/unfollow button -->
                 {% else %}
-                <box-icon type='solid' size='lg' color='white' name='user-plus'></box-icon>          
+                <box-icon type='solid' size='lg' color='white' name='user-plus' id='follow-button'></box-icon>          
                 {% endif %}
+                <h6>Followers: {{ userInfo.followers }}</h6>
+                <h6>Following: {{ userInfo.following }}</h6>
                 <h6> EST. {{ userInfo.date_joined }}</h6>
             </div>
         </div>
@@ -29,7 +31,7 @@
         <div class='profile-single-post'>
             <div class='profile-sp-left'>
                 <div class='profile-sp-caption'>
-                    {{ post.caption }}
+                    <p>{{ post.caption }}</p>
                 </div>
                 <div class='interactions'>
                     <form class='interaction-form' method='POST'>
@@ -68,7 +70,7 @@
                           
                             <div id='image-container'>
                                 <label for='id_image' id='image-label'><box-icon name='image-add' color='white'></box-icon></label>
-                                <div id='image-input'>{{ postForm.image }}</div>
+                            
                             </div>
                         </div>
                               </div>
@@ -81,7 +83,7 @@
                   </div>
                 </div>
                 </div>
-                {{ post.timestamp }}
+                <p>{{ post.timestamp }}</p>
             </div>
         </div>
         {% endfor %}

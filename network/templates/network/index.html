@@ -28,7 +28,7 @@
                                 <div class="modal-body">
                                 <form id='editPostForm' action='/' method='POST'>
                                     {% csrf_token %}
-                                  <div id='{{ i.id }}' class="form-group edit-textarea-div">
+                                  <div name='textarea-div' id='{{ i.id }}' class="form-group edit-textarea-div">
                                     {{ postForm.caption }}          
                                   
                                     <div id='image-container'>
@@ -38,7 +38,7 @@
                                 </div>
                                       </div>
                               <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button id='close-edit-modal' type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <input id='edit-sub' type="submit" value='Submit'>
                              </form>
                              </div>
@@ -48,8 +48,9 @@
                         </div> 
                     {% endif %}
                     </div>
+                    name
                 <div class='post-content'>
-                    <p>
+                    <p id='para_{{ i.id }}'>
                         {{ i.caption }}
                     </p>
                 </div>

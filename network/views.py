@@ -17,9 +17,19 @@ class PostForm(forms.Form):
         'cols': '40',
 
     }))
-    image = forms.ImageField(required=False)
+
 
 # API VIEWS
+
+@csrf_exempt
+def get_posts(request, postId):
+    updatedPost = Post.objects.filter(id=postId).values()
+    updatedPost = updatedPost[0]
+    print(updatedPost)
+    return JsonResponse({
+        'caption': updatedPost['caption'],
+        'postId': postId
+    })
 
 
 @csrf_exempt
@@ -153,7 +163,7 @@ def index(request):
             post = Post(
                 username=request.user,
                 caption=form.cleaned_data['caption'],
-                image=form.cleaned_data['image'],
+
             )
             post.save()
         return render(request, "network/index.html", {
@@ -222,7 +232,7 @@ def register(request):
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             bio = form.cleaned_data["caption"]
-            profilePic = form.cleaned_data["image"]
+
         # Ensure password matches confirmation
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
@@ -237,17 +247,11 @@ def register(request):
             user = User.objects.create_user(
                 username, email, password, name, bio)
             user.save()
-            if profilePic != None:
-                test = User.objects.filter(username=username, password=password).update(
-                    bio=bio,
-                    profilePic=profilePic,
-                )
-            else:
-                test = User.objects.filter(username=username, password=password).update(
-                    bio=bio,
+            test = User.objects.filter(username=username, password=password).update(
+                bio=bio,
 
-                )
-                test.save()
+            )
+            test.save()
         except IntegrityError:
             return render(request, "network/register.html", {
                 "message": "Username already taken.",

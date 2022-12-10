@@ -7,6 +7,8 @@ class User(AbstractUser):
     bio = models.TextField(default="")
     profilePicture = models.ImageField(
         upload_to="network/static/images/", default=False, blank=True, null=True)
+    followers = models.IntegerField(default=0)
+    following = models.IntegerField(default=0)
 
 
 class Realationships(models.Model):

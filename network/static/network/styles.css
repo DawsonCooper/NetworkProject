@@ -245,7 +245,9 @@ textarea:focus-visible{
     padding: 1%;
     padding-top: 2%;
 }
-
+#follow-button{
+    cursor: pointer;
+}
 #user-posts{
 
 }
@@ -255,11 +257,14 @@ textarea:focus-visible{
     padding: 1%;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
+.profile-sp-caption{
+    max-width: 75%;
+}
 .profile-post-footer{
 
 }
-.profile-post-right{
-
+.profile-sp-right{
+    max-width: 15%;
 }
 .profile-sp-caption{
     font-size: 1.2rem;
