@@ -13,7 +13,7 @@
                 {% if user.username == userInfo.username %}
                 <!-- Something to replace the follow/unfollow button -->
                 {% else %}
-                <box-icon type='solid' size='lg' color='white' name='user-plus' id='follow-button'></box-icon>          
+                <box-icon type='solid' size='lg' color='white' name='user-plus' id='follow-button' data-user='{{ userInfo.id }}'></box-icon>          
                 {% endif %}
                 <h6>Followers: {{ userInfo.followers }}</h6>
                 <h6>Following: {{ userInfo.following }}</h6>
@@ -46,7 +46,9 @@
                             <p id='p-{{ post.id }}'>{{ post.totalComments }}</p>
                         </div>
                     </form>
-                </div>
+                    <div class='profile-timestamp'><p>{{ post.timestamp }}</p></div>
+                    </div>
+                
             </div>
             <div class='profile-sp-right'>
                 <div class='edit-post'>
@@ -83,7 +85,7 @@
                   </div>
                 </div>
                 </div>
-                <p>{{ post.timestamp }}</p>
+                
             </div>
         </div>
         {% endfor %}

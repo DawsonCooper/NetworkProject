@@ -9,7 +9,16 @@ const editButtonArr = document.querySelectorAll('#editPostButton');
 const editForms = document.querySelectorAll('#editPostForm');
 const editSubButtons = document.querySelectorAll('#edit-sub');
 const followButton = document.querySelector('#follow-button');
-
+function createRealationship(follower, following){
+    fetch('/create_realationship', {
+        method: 'POST',
+        body: JSON.stringify({
+            follower: follower,
+            following: following,
+        })
+        }).then(response => response.json())
+        .then(result => result).catch(error => alert.log(error));
+}
 function getPosts(postId){
     fetch(`get_posts/${postId}`, {
         method: 'GET',
@@ -202,5 +211,10 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('mouseout', () => {
             button.childNodes[0].nextSibling.setAttribute("animation", "none"); 
         });
-    })        
+    })    
+    followButton.addEventListener('click', () => {
+        let follower = document.querySelector('#logged-in-username').dataset.loggedInUser;
+        let following = followButton.dataset.user;
+        createRealationship(follower,following);
+    });    
 });

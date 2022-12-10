@@ -28,7 +28,7 @@
                             {% else %}
                                 <box-icon id='profilePicIcon' name='user-circle' size='md' color='rgb(230, 230, 230)'></box-icon>
                             {% endif %}
-                            <strong>{{ user.username }}</strong></a>
+                            <strong id='logged-in-username' data-logged-in-user="{{user.id}}">{{ user.username }}</strong></a>
                     </li>
                 {% endif %}
                 <li class="nav-item">

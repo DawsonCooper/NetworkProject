@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django import forms
 from django.db import models
-from .models import User, Post, Likes, Comment
+from .models import User, Post, Likes, Comment, Realationships
 from django.core.paginator import Paginator
 
 
@@ -45,21 +45,35 @@ def get_post_data(request, postId):
 
 
 @csrf_exempt
-def create_realationship(request, user):
+def create_realationship(request):
     """WE COULD POSSIBLY RECIEVE 3 REQUESTS POST TO CREATE A NEW REALATIONSHIP
         PUT WE WILL WANT TO DELETE THE ENTIRE ROW OF A REALATIONSHIP
         GET WE WILL WANT TO RETURN A GIVEN USERS FOLLOWERS AND FOLLOWING
     """
-    if request.method == 'POST':
-        pass
+    data = json.loads(request.body)
+    follower = data.get('follower')
+    following = data.get('following')
 
-    if request.method == 'GET':
-        pass
+    followingModel = User.objects.filter(id=following).values()
+    followingModel = followingModel[0]
+    try:
+        check = Realationships.objects.get(
+            followerId=follower, followingId=following)
 
-    if request.method == 'PUT':
-        pass
-
-    pass
+    except Realationships.DoesNotExist:
+        realationship = Realationships(
+            followerId=follower,
+            followingId=following,
+        )
+        realationship.save()
+        User.objects.filter(id=following).update(
+            followers=followingModel['followers'] + 1)
+        return JsonResponse({'successful': 'Followed'})
+    else:
+        check.delete()
+        User.objects.filter(id=following).update(
+            followers=followingModel['followers'] - 1)
+        return JsonResponse({'successful': 'Followed'})
 
 
 @csrf_exempt

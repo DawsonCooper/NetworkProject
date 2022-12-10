@@ -212,14 +212,14 @@ textarea:focus-visible{
 #profile-body{
     display: flex;
     justify-content: center;
-    height: 100vh;
+    min-height: 100vh;
     width: 100%;
     
 }
 
 #profile-user-info{
     margin-top: 0px;
-    height: 100vh;
+    height: 100%;
     width: 65%;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
     border-right: 1px solid rgba(255, 255, 255, 0.1);
@@ -268,4 +268,16 @@ textarea:focus-visible{
 }
 .profile-sp-caption{
     font-size: 1.2rem;
+}
+.interactions{
+    display: flex;
+    justify-content: space-between;
+    vertical-align: center;
+}
+.profile-timestamp{
+    display: flex;
+    align-items: center;
+}
+.profile-timestamp p{
+    margin: 0
 }
