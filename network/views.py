@@ -207,7 +207,7 @@ def profile(request, username):
 
     return render(request, "network/profile.html", {
         'postForm': PostForm,
-        'userPosts': userPosts,
+        'userPosts': userPosts.order_by('-timestamp'),
         'userInfo': userInfo[0]
     })
 

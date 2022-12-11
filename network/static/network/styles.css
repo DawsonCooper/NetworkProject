@@ -248,9 +248,7 @@ textarea:focus-visible{
 #follow-button{
     cursor: pointer;
 }
-#user-posts{
 
-}
 .profile-single-post{
     display: flex;
     justify-content: space-between;
@@ -258,17 +256,16 @@ textarea:focus-visible{
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 .profile-sp-caption{
-    max-width: 75%;
+    width: 75%;
+    font-size: 1.2rem;
 }
-.profile-post-footer{
-
+.profile-sp-left{
+    width: 100%;
 }
 .profile-sp-right{
     max-width: 15%;
 }
-.profile-sp-caption{
-    font-size: 1.2rem;
-}
+
 .interactions{
     display: flex;
     justify-content: space-between;

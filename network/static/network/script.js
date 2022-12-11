@@ -145,26 +145,34 @@ function update_interaction_count(){
         .catch(error => console.log(error));
     }
 function get_user_interactions(){
-    fetch(`/get_user_interactions`, {
-        method: 'GET',
-        })
-        .then(response => response.json())
-        .then((result) => {
-            for (let i = 0; i < result.length; i++){
-                console.log(result[i])
-                let arrOfButtons = document.querySelectorAll(`[name="${result[i].post}"]`);
-                console.log(arrOfButtons)
-                if(result[i].status == 1){
-                    arrOfButtons[0].childNodes[0].setAttribute('color', 'red');
-                    arrOfButtons[0].childNodes[0].setAttribute('type', 'solid');
-                }else if(result[i].status == -1){
-                    arrOfButtons[1].childNodes[0].setAttribute('color', 'red');
-                    arrOfButtons[1].childNodes[0].setAttribute('type', 'solid'); 
+    url = window.location.href;
+    console.log(url);
+    let regex = /.*profile.*/;
+    //if (!regex.test(url)){
+        fetch(`/get_user_interactions`, {
+            method: 'GET',
+            })
+            .then(response => response.json())
+            .then((result) => {
+                for (let i = 0; i < result.length; i++){
+                    console.log(result)
+
+                    let arrOfButtons = document.querySelectorAll(`[name="${result[i].post}"]`);
+                    console.log(arrOfButtons)
+                    if(arrOfButtons.length > 0){
+                        if(result[i].status == 1){
+                            arrOfButtons[0].childNodes[0].setAttribute('color', 'red');
+                            arrOfButtons[0].childNodes[0].setAttribute('type', 'solid');
+                        }else if(result[i].status == -1){
+                            arrOfButtons[1].childNodes[0].setAttribute('color', 'red');
+                            arrOfButtons[1].childNodes[0].setAttribute('type', 'solid'); 
+                    }
                 }
-            }
-        })
-        .catch(error => console.log(error));
-    }
+                }
+            })
+            .catch(error => console.log(error));
+    //}
+}
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -212,9 +220,18 @@ document.addEventListener('DOMContentLoaded', function() {
             button.childNodes[0].nextSibling.setAttribute("animation", "none"); 
         });
     })    
-    followButton.addEventListener('click', () => {
-        let follower = document.querySelector('#logged-in-username').dataset.loggedInUser;
-        let following = followButton.dataset.user;
-        createRealationship(follower,following);
-    });    
+    if(followButton) {
+        followButton.addEventListener('click', () => {
+            let follower = document.querySelector('#logged-in-username').dataset.loggedInUser;
+            let following = followButton.dataset.user;
+            console.log(followButton);
+            
+            if(followButton._state.currentName == 'user-plus'){
+                followButton.setAttribute('name', 'user-minus');
+            }else{
+                followButton.setAttribute('name', 'user-plus');
+            }
+            createRealationship(follower,following);
+        });    
+    }
 });
