@@ -1,0 +1,98 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <div id='index-body'>
+        <div id='post-container'>
+            
+            {% for i in posts %}
+            <div class='single-post-container' id='{{ i.id }}'>
+                <div class='user-info'>
+   
+                    <a class='profile-link' href='/profile/{{ i.username }}'><div id='{{ i.username }}' class='index-user-info-top'><box-icon id='profilePicIcon' name='user-circle' size='sm' color='rgb(230, 230, 230)'></box-icon>{{ i.username }}</div></a>
+                    {% if i.username == user.username %}
+                        
+                        <div class='edit-post'>
+                            <button type="button" id='editPostButton' class="btn btn-dark" data-toggle="modal" data-target="#editPostPopup" data-whatever="@getbootstrap">
+                                <box-icon animation='none' id='editPostSvg' name='plus-circle' size='30px' color="rgb(230, 230, 230)"></box-icon></button>
+                        
+                                <div class="modal fade" id="editPostPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background-color: rgba(125, 125, 125, 0.25)">
+                                    <div class="modal-dialog" role="document" tabindex='5'>
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">New Post</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true"><box-icon name='x-circle' color='white' size='sm'></box-icon></span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                <form id='editPostForm' action='/' method='POST'>
+                                    {% csrf_token %}
+                                  <div name='textarea-div' id='{{ i.id }}' class="form-group edit-textarea-div">
+                                    {{ postForm.caption }}          
+                                  
+                                    <div id='image-container'>
+                                        <label for='id_image' id='image-label'><box-icon name='image-add' color='white'></box-icon></label>
+                                        <div id='image-input'>{{ postForm.image }}</div>
+                                    </div>
+                                </div>
+                                      </div>
+                              <div class="modal-footer">
+                                <button id='close-edit-modal' type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input id='edit-sub' type="submit" value='Submit'>
+                             </form>
+                             </div>
+                            </div>
+                          </div>
+                        </div>
+                        </div> 
+                    {% endif %}
+                    </div>
+                    
+                <div class='post-content'>
+                    <p id='para_{{ i.id }}'>
+                        {{ i.caption }}
+                    </p>
+                </div>
+                <div class='post-footer'>
+                    <div class='interactions'>
+                        <form class='interaction-form' method='POST'>
+                            {% csrf_token %}
+                            <div class='interaction-form'>
+                                <button type='submit' class='like interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='like' class='interaction-icons'></box-icon></button>
+                                <p id='p-{{ i.id }}'>{{ i.totalLikes }}</p>
+                            </div>
+                            <div class='interaction-form'>
+                                <button type='submit' class='dislike interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='dislike' class='interaction-icons'></box-icon></button>
+                                <button type='submit' class='comment interaction-button' name='{{ i.id }}'><box-icon color='white' size='sm' name='comment' class='interaction-icons'></box-icon></button>
+                                <p id='p-{{ i.id }}'>{{ i.totalComments }}</p>
+                            </div>
+                        </form>
+                    </div>
+                    <div class='post-timestamp'>
+
+                        {{ i.timestamp }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        
+            <nav aria-label="Page navigation example">
+                <ul id='paginator-buttons' class="pagination">
+                  <div>
+                    <li class="disabled">
+                    <a id='previous-page' href="/" tabindex="-1"><box-icon animation='fade-left-hover' color="rgb(230, 230, 230)" name='left-arrow-alt' ></box-icon></a>
+                  </li>
+                </div>
+                <div>
+                  <li class="">
+                    <a id='next-page' href="/"><box-icon animation='fade-right-hover' color="rgb(230, 230, 230)" name='right-arrow-alt'></box-icon></a>
+                  </li>
+                </div>
+                </ul>
+              </nav>
+        </div>
+    </div>
+    
+
+
+{% endblock %}

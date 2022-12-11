@@ -105,6 +105,7 @@ def update_post(request, postId):
 
 @ csrf_exempt
 def interaction_API(request, postId):
+
     try:
         post = Post.objects.get(id=postId)
     except Post.DoesNotExist:
@@ -125,7 +126,7 @@ def interaction_API(request, postId):
         data = json.loads(request.body)
         interaction = data.get('body')
         print('interaction', interaction)
-        updateLike = True
+
         statusValue = 3
         if interaction == 'like':
 
@@ -134,26 +135,39 @@ def interaction_API(request, postId):
             statusValue = -1
         elif interaction == 'undo':
             statusValue = 0
+        if statusValue == 3:
+            return JsonResponse({'comment': True})
         try:
             updateLike = Likes.objects.get(
                 post=postId, username=request.user)
+
+            print(updateLike, 'in try')
         except Likes.DoesNotExist:
             like = Likes(
                 username=request.user,
                 post=postId,
                 status=statusValue)
             like.save()
-            return JsonResponse({'successful': 'Liked'})
+            if statusValue == 1:
+                Post.objects.filter(id=postId).update(
+                    totalLikes=totalLikes + 1)
+            elif statusValue == -1 or statusValue == 0:
+                Post.objects.filter(id=postId).update(
+                    totalLikes=totalLikes - 1)
+            print("in except")
+            return JsonResponse({'Like': 'Successful'})
 
-        updateLike.status = statusValue
-        updateLike.save()
-        if interaction == 'comment':
-            # THIS WILL BE FOR OUT COMMENTS AND WE WILL BE MODIFYING THE COMMMENT MODEL
+        # TODOOOO: !!!!set inital statusValue to check when updating like count bellow!!!!
 
-            pass
+        Likes.objects.filter(post=postId, username=request.user).update(
+            status=statusValue)
+
+        # TODOOOO: !!!!set inital statusValue to check when updating like count below!!!!
+
         # UPDATE POST MODEL TO TRACK NUM OF LIKES
         row = Post.objects.filter(id=postId).values()
         totalLikes = row[0]['totalLikes']
+        print(statusValue, totalLikes)
         if statusValue == 1:
             Post.objects.filter(id=postId).update(
                 totalLikes=totalLikes + 1)
@@ -162,6 +176,30 @@ def interaction_API(request, postId):
                 totalLikes=totalLikes - 1)
 
     return JsonResponse({'successful': 'Liked'})
+
+
+def following(request):
+    currUserId = request.user.id
+    followList = Realationships.objects.filter(
+        followerId=currUserId).values('followingId')
+    print(followList)
+    postList = []
+    followListUsernames = []
+    for user in followList:
+        followListUsernames.append(User.objects.filter(
+            pk=user['followingId']).values('username'))
+    for username in followListUsernames:
+        usersPosts = Post.objects.filter(
+            username=username[0]['username']).values()
+        usersPosts = usersPosts.order_by('-timestamp').all()
+        usersPosts = list(usersPosts)
+        postList = postList + usersPosts
+    sortedPostList = sorted(
+        postList, key=lambda d: d['timestamp'], reverse=True)
+    print(sortedPostList)
+    return render(request, 'network/following.html', {
+        'posts': sortedPostList,
+    })
 
 
 def index(request):
@@ -243,10 +281,9 @@ def register(request):
         username = request.POST["username"]
         name = request.POST["name"]
         email = request.POST["email"]
-        form = PostForm(request.POST, request.FILES)
+        form = PostForm(request.POST)
         if form.is_valid():
             bio = form.cleaned_data["caption"]
-
         # Ensure password matches confirmation
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
@@ -259,13 +296,11 @@ def register(request):
         # Attempt to create new user
         try:
             user = User.objects.create_user(
-                username, email, password, name, bio)
+                username, email, password)
             user.save()
-            test = User.objects.filter(username=username, password=password).update(
-                bio=bio,
-
-            )
-            test.save()
+            User.objects.filter(username=username).update(
+                bio=bio, name=name)
+            print(bio, name)
         except IntegrityError:
             return render(request, "network/register.html", {
                 "message": "Username already taken.",
