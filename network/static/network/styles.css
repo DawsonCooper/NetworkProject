@@ -145,8 +145,7 @@ textarea:focus-visible{
     margin-top: 0px;;
     height: calc(100% - 38px);
     width: 45%;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .user-info{
     display: flex;
@@ -221,14 +220,13 @@ textarea:focus-visible{
     margin-top: 0px;
     height: 100%;
     width: 65%;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     
 }
 #header{
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
 }
 #user-header-left{
     padding: 1%;
@@ -244,6 +242,10 @@ textarea:focus-visible{
     text-align: right;
     padding: 1%;
     padding-top: 2%;
+}
+#user-header-center{
+    padding: 1%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 #follow-button{
     cursor: pointer;

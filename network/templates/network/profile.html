@@ -13,18 +13,25 @@
                 {% if user.username == userInfo.username %}
                 <!-- Something to replace the follow/unfollow button -->
                 {% else %}
-                <box-icon type='solid' size='lg' color='white' name='user-plus' id='follow-button' data-user='{{ userInfo.id }}'></box-icon>          
+                {% if not isFollowing %}
+                <box-icon type='solid' size='lg' color='white' name='user-plus' id='follow-button' data-user='{{ userInfo.id }}'></box-icon>
+                {% else %}    
+                <box-icon type='solid' size='lg' color='white' name='user-minus' id='follow-button' data-user='{{ userInfo.id }}'></box-icon>
                 {% endif %}
-                <h6>Followers: {{ userInfo.followers }}</h6>
-                <h6>Following: {{ userInfo.following }}</h6>
+                {% endif %}
+                <h6 id='followers'>Followers: {{ userInfo.followers }}</h6>
+                <h6 id='following'>Following: {{ userInfo.following }}</h6>
                 <h6> EST. {{ userInfo.date_joined }}</h6>
             </div>
+
+            
         </div>
-        {% if userInfo.bio != '' %}
+        
         <div id='user-header-center'>
-            <p>{{ userInfo.bio }}</p>
+            {% if userInfo.bio != '' %}<p>{{ userInfo.bio }}</p>{% endif %}
         </div>
-        {% endif %}
+        
+        
     
     <div id='user-posts'>
         {% for post in userPosts %}
@@ -89,21 +96,26 @@
             </div>
         </div>
         {% endfor %}
-        <nav aria-label="Page navigation example">
+        {% if  posts.has_previous or posts.has_next%}
+        <nav aria-label="Page navigation">
             <ul id='paginator-buttons' class="pagination">
-            <div>
-              <li class="disabled">
-              <a id='previous-page' href="/" tabindex="-1"><box-icon animation='fade-left-hover' color="rgb(230, 230, 230)" name='left-arrow-alt' ></box-icon></a>                
-              </li>
-              </div>
               <div>
-                <li class="">
-                  <a id='next-page' href="/"><box-icon animation='fade-right-hover' color="rgb(230, 230, 230)" name='right-arrow-alt'></box-icon></a>
-                </li>
-              </div>
-              </ul>
-            </nav>
-
+                <li class="disabled">
+                {% if posts.has_previous %}
+                <a id='previous-page' href="/?page={{ posts.previous_page_number }}" tabindex="-1"><box-icon animation='fade-left-hover' color="rgb(230, 230, 230)" name='left-arrow-alt' ></box-icon></a>
+                {% endif %}
+            </li>
+            </div>
+            <div>
+              <li class="">
+                {% if posts.has_next %}
+                <a id='next-page' href="/?page={{ posts.next_page_number }}"><box-icon animation='fade-right-hover' color="rgb(230, 230, 230)" name='right-arrow-alt'></box-icon></a>
+                {% endif %}
+            </li>
+            </div>
+            </ul>
+          </nav>
+        {% endif %}
     </div>
 </div>
 

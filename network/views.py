@@ -45,15 +45,20 @@ def get_post_data(request, postId):
 
 
 @csrf_exempt
-def create_realationship(request):
+def create_realationship(request, onProfile):
     """WE COULD POSSIBLY RECIEVE 3 REQUESTS POST TO CREATE A NEW REALATIONSHIP
         PUT WE WILL WANT TO DELETE THE ENTIRE ROW OF A REALATIONSHIP
         GET WE WILL WANT TO RETURN A GIVEN USERS FOLLOWERS AND FOLLOWING
     """
+    if request.method == 'GET':
+        followerCount = User.objects.filter(id=onProfile).values('followers')
+        followerCount = followerCount[0]['followers']
+        return JsonResponse({'followerCount': followerCount})
     data = json.loads(request.body)
     follower = data.get('follower')
     following = data.get('following')
-
+    currUser = User.objects.filter(id=follower).values()
+    currUser = currUser[0]
     followingModel = User.objects.filter(id=following).values()
     followingModel = followingModel[0]
     try:
@@ -68,11 +73,15 @@ def create_realationship(request):
         realationship.save()
         User.objects.filter(id=following).update(
             followers=followingModel['followers'] + 1)
+        User.objects.filter(id=follower).update(
+            following=currUser['following'] + 1)
         return JsonResponse({'successful': 'Followed'})
     else:
         check.delete()
         User.objects.filter(id=following).update(
             followers=followingModel['followers'] - 1)
+        User.objects.filter(id=follower).update(
+            following=currUser['following'] - 1)
         return JsonResponse({'successful': 'Followed'})
 
 
@@ -141,39 +150,61 @@ def interaction_API(request, postId):
             updateLike = Likes.objects.get(
                 post=postId, username=request.user)
 
-            print(updateLike, 'in try')
         except Likes.DoesNotExist:
             like = Likes(
                 username=request.user,
                 post=postId,
                 status=statusValue)
             like.save()
+            row = Post.objects.filter(id=postId).values()
+            totalLikes = row[0]['totalLikes']
             if statusValue == 1:
                 Post.objects.filter(id=postId).update(
                     totalLikes=totalLikes + 1)
             elif statusValue == -1 or statusValue == 0:
                 Post.objects.filter(id=postId).update(
                     totalLikes=totalLikes - 1)
-            print("in except")
             return JsonResponse({'Like': 'Successful'})
 
-        # TODOOOO: !!!!set inital statusValue to check when updating like count bellow!!!!
-
+        # 1 = initally liked / -1 = initally disliked / 0 = initally unliked
+        initalLike = Likes.objects.filter(
+            post=postId, username=request.user).values('status')
+        initalLike = initalLike[0]['status']
         Likes.objects.filter(post=postId, username=request.user).update(
             status=statusValue)
-
-        # TODOOOO: !!!!set inital statusValue to check when updating like count below!!!!
+        print(initalLike)
 
         # UPDATE POST MODEL TO TRACK NUM OF LIKES
         row = Post.objects.filter(id=postId).values()
         totalLikes = row[0]['totalLikes']
         print(statusValue, totalLikes)
         if statusValue == 1:
-            Post.objects.filter(id=postId).update(
-                totalLikes=totalLikes + 1)
-        elif statusValue == -1 or statusValue == 0:
-            Post.objects.filter(id=postId).update(
-                totalLikes=totalLikes - 1)
+            if initalLike == 0:
+                Post.objects.filter(id=postId).update(
+                    totalLikes=totalLikes + 1)
+            elif initalLike == -1:
+                Post.objects.filter(id=postId).update(
+                    totalLikes=totalLikes + 2)
+            elif initalLike == 3:
+                Post.objects.filter(id=postId).update(
+                    totalLikes=totalLikes + 1)
+        elif statusValue == -1:
+            if initalLike == 0:
+                Post.objects.filter(id=postId).update(
+                    totalLikes=totalLikes - 1)
+            elif initalLike == 1:
+                Post.objects.filter(id=postId).update(
+                    totalLikes=totalLikes - 2)
+            elif initalLike == 3:
+                Post.objects.filter(id=postId).update(
+                    totalLikes=totalLikes - 1)
+        elif statusValue == 0:
+            if initalLike == 1:
+                Post.objects.filter(id=postId).update(
+                    totalLikes=totalLikes - 1)
+            elif initalLike == -1:
+                Post.objects.filter(id=postId).update(
+                    totalLikes=totalLikes + 1)
 
     return JsonResponse({'successful': 'Liked'})
 
@@ -207,7 +238,9 @@ def index(request):
     posts = Post.objects.all().values()
     posts = posts.order_by("-timestamp").all()
     posts = Paginator(posts, 10)
-    print(request)
+    pNum = request.GET.get('page')
+    if pNum is None:
+        pNum = 1
 
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
@@ -221,19 +254,13 @@ def index(request):
         return render(request, "network/index.html", {
             'postForm': PostForm,
             'numPages': posts.num_pages,
-            'posts': posts.page(1).object_list,
+            'posts': posts.get_page(pNum),
         })
-    if posts.num_pages <= 5:
-        return render(request, "network/index.html", {
-            'postForm': PostForm,
-            'numPages': posts.num_pages,
-            'posts': posts.page(1).object_list,
 
-        })
     return render(request, "network/index.html", {
         'postForm': PostForm,
         'numPages': posts.num_pages,
-        'posts': posts.page(1).object_list,
+        'posts': posts.get_page(pNum),
 
 
     })
@@ -242,11 +269,21 @@ def index(request):
 def profile(request, username):
     userPosts = Post.objects.filter(username=username).all().values()
     userInfo = User.objects.filter(username=username).values()
+    currUser = request.user
+    currUser = User.objects.filter(username=currUser).values()
+    try:
+        Realationships.objects.get(
+            followerId=currUser[0]['id'], followingId=userInfo[0]['id'])
+        isFollowing = True
 
+    except Realationships.DoesNotExist:
+        isFollowing = False
+    print(isFollowing)
     return render(request, "network/profile.html", {
         'postForm': PostForm,
         'userPosts': userPosts.order_by('-timestamp'),
-        'userInfo': userInfo[0]
+        'userInfo': userInfo[0],
+        'isFollowing': isFollowing,
     })
 
 

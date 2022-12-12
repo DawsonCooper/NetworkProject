@@ -76,20 +76,26 @@
             </div>
             {% endfor %}
         
-            <nav aria-label="Page navigation example">
+            {% if  posts.has_previous or posts.has_next%}
+            <nav aria-label="Page navigation">
                 <ul id='paginator-buttons' class="pagination">
                   <div>
                     <li class="disabled">
-                    <a id='previous-page' href="/" tabindex="-1"><box-icon animation='fade-left-hover' color="rgb(230, 230, 230)" name='left-arrow-alt' ></box-icon></a>
-                  </li>
+                    {% if posts.has_previous %}
+                    <a id='previous-page' href="/?page={{ posts.previous_page_number }}" tabindex="-1"><box-icon animation='fade-left-hover' color="rgb(230, 230, 230)" name='left-arrow-alt' ></box-icon></a>
+                    {% endif %}
+                </li>
                 </div>
                 <div>
                   <li class="">
-                    <a id='next-page' href="/"><box-icon animation='fade-right-hover' color="rgb(230, 230, 230)" name='right-arrow-alt'></box-icon></a>
-                  </li>
+                    {% if posts.has_next %}
+                    <a id='next-page' href="/?page={{ posts.next_page_number }}"><box-icon animation='fade-right-hover' color="rgb(230, 230, 230)" name='right-arrow-alt'></box-icon></a>
+                    {% endif %}
+                </li>
                 </div>
                 </ul>
               </nav>
+            {% endif %}
         </div>
     </div>
     

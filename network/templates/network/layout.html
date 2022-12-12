@@ -15,20 +15,15 @@
     <body>
 
         <nav id='navbar' class="navbar navbar-expand-lg">
-            <a class="navbar-brand" href="#">Network</a>
+            <a class="navbar-brand" href="/">Network</a>
           
             <div id='navbar-container'>
               <ul class="navbar-nav mr-auto" >
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                
                         <a id="profile-pic" class="nav-link" href="/profile/{{ user.username }}">
-                            {% if user.profilePicture != 'False' %}
-                                <img src="network/static/images/{{ user.profilePicture }}" id='navbar-profilePic'>
-                            {% else %}
-                                <box-icon id='profilePicIcon' name='user-circle' size='md' color='rgb(230, 230, 230)'></box-icon>
-                            {% endif %}
-                            <strong id='logged-in-username' data-logged-in-user="{{user.id}}">{{ user.username }}</strong></a>
+                        <box-icon id='profilePicIcon' name='user-circle' size='md' color='rgb(230, 230, 230)'></box-icon>
+                        <strong id='logged-in-username' data-logged-in-user="{{user.id}}">{{ user.username }}</strong></a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
@@ -41,7 +36,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profile</a>
+                        <a class="nav-link" href="/profile/{{ user }}">Profile</a>
                     </li>
                     <li class="nav-item">
                         <button type="button" id='newPostButton' class="btn btn-dark" data-toggle="modal" data-target="#modalBackdrop" data-whatever="@getbootstrap">

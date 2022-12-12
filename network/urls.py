@@ -17,7 +17,7 @@ urlpatterns = [
     path('like/<int:postId>', views.interaction_API, name="like"),
     path("get_user_interactions", views.get_user_interactions,
          name="get_user_interactions"),
-    path('create_realationship', views.create_realationship,
+    path('create_realationship/<str:onProfile>', views.create_realationship,
          name="create_realationship"),
     path('get_post_data/<int:postId>', views.get_post_data, name="get_post_data"),
     path('update_post/<int:postId>', views.update_post, name="update_post"),

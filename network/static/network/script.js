@@ -10,7 +10,7 @@ const editForms = document.querySelectorAll('#editPostForm');
 const editSubButtons = document.querySelectorAll('#edit-sub');
 const followButton = document.querySelector('#follow-button');
 function createRealationship(follower, following){
-    fetch('/create_realationship', {
+    fetch(`/create_realationship/${following}`, {
         method: 'POST',
         body: JSON.stringify({
             follower: follower,
@@ -18,6 +18,14 @@ function createRealationship(follower, following){
         })
         }).then(response => response.json())
         .then(result => result).catch(error => alert.log(error));
+    setTimeout(() => {
+        fetch(`/create_realationship/${following}`, {
+            method: 'GET',
+        }).then(response => response.json())
+        .then(result => document.querySelector('#followers').innerText = `Followers: ${result['followerCount']}`)
+        .catch(error => alert(error))
+    }, 100)
+
 }
 function getPosts(postId){
     fetch(`get_posts/${postId}`, {
