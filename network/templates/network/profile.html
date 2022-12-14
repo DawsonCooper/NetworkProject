@@ -60,10 +60,10 @@
             <div class='profile-sp-right'>
                 {% if userInfo.username == user.username %}
                 <div class='edit-post'>
-                    <button type="button" id='edit-post-button' class="btn btn-dark" data-toggle="modal" data-target="#modalBackdrop" data-whatever="@getbootstrap">
-                        <box-icon animation='none' id='newPostSvg' name='plus-circle' size='30px' color="rgb(230, 230, 230)"></box-icon></button>
+                    <button type="button" id='editPostButton' class="btn btn-dark" data-toggle="modal" data-target="#editPost" data-whatever="@getbootstrap">
+                        <box-icon animation='none' id='editPostSvg' name='plus-circle' size='30px' color="rgb(230, 230, 230)"></box-icon></button>
                 
-                        <div class="modal fade" id="modalBackdrop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background-color: rgba(125, 125, 125, 0.25)">
+                        <div class="modal fade" id="editPost" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background-color: rgba(125, 125, 125, 0.25)">
                             <div class="modal-dialog" role="document" tabindex='5'>
                             <div class="modal-content">
                             <div class="modal-header">
@@ -73,15 +73,11 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                        <form action='/' method='POST'>
+                        <form id='editPostForm' action='/' method='POST'>
                             {% csrf_token %}
-                          <div id='textarea-div' class="form-group">
+                          <div name='textarea-div' id='{{ post.id }}' class="form-group edit-textarea-div">
                             {{ postForm.caption }}            
                           
-                            <div id='image-container'>
-                                <label for='id_image' id='image-label'><box-icon name='image-add' color='white'></box-icon></label>
-                            
-                            </div>
                         </div>
                               </div>
                       <div class="modal-footer">

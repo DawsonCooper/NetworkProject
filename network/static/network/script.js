@@ -131,13 +131,21 @@ function get_post_data(postId,caption) {
         method: 'GET'
     }).then(response => response.json())
     .then(result => {
-        console.log(result, 'caption: ' + caption);
+        console.log(caption);
         caption.value = result.caption
     })
     .catch(error => alert(error));
+    editFormEvent(postId, caption);
 }
-
+function editFormEvent(postId, caption) {
+        console.log(caption.form)
+        caption.form.addEventListener('submit', (e) => {
+            e.preventDefault()
+            submit_post_modification(postId, caption.value);
+        })
+}
 function submit_post_modification(postId, caption) {
+    console.log('id: ' + postId, caption)
     fetch(`update_post/${postId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -205,17 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    editForms.forEach(form => {
-        console.log(form)
-        form.addEventListener('submit', (e) => {
-            e.preventDefault()
-            console.log(form)
-            let id = form.lastElementChild.id;
-            console.log('id: ' +id)
-            let caption = form.childNodes[3].childNodes[1].value;
-            submit_post_modification(id, caption);
-        })
-    });
     get_user_interactions();
     interactButtonHover(likeButton);
     interactButtonHover(dislikeButton);
