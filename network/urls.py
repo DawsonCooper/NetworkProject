@@ -25,6 +25,13 @@ urlpatterns = [
          name="update_interaction_count"),
     #path('edit_post', views.edit_post, name="edit_post"),
     path('get_posts/<int:postId>', views.get_posts, name="get_posts"),
+
+
+    path('profile/get_posts/<int:postId>', views.get_posts, name="get_posts"),
+    path('profile/update_post/<int:postId>',
+         views.update_post, name="update_post"),
+    path('profile/get_post_data/<int:postId>',
+         views.get_post_data, name="get_post_data"),
 ]
 # MEDIA routes
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

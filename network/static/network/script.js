@@ -37,9 +37,9 @@ function getPosts(postId){
         method: 'GET',
     }).then(response => response.json())
     .then(result => {
-        console.log(result)
+        //console.log(result)
         document.querySelector(`#para_${result.postId}`).innerText = result.caption;
-        document.querySelector('#close-edit-modal').click();
+        document.querySelector(`#close-edit-modal${postId}`).click();
     })
     .catch(error => console.log(error));
 }
@@ -126,26 +126,28 @@ function interactButtonHover(button){
             })
         }}
 function get_post_data(postId,caption) {
-    
-    fetch(`/get_post_data/${postId}`, {
-        method: 'GET'
-    }).then(response => response.json())
-    .then(result => {
-        console.log(caption);
-        caption.value = result.caption
-    })
-    .catch(error => alert(error));
-    editFormEvent(postId, caption);
+    if (caption.parentNode.id === postId){
+        fetch(`/get_post_data/${postId}`, {
+            method: 'GET'
+        }).then(response => response.json())
+        .then(result => {
+
+            console.log(caption);
+            caption.value = result.caption
+        })
+        .catch(error => alert(error));
+        editFormEvent(postId, caption);
+    }
 }
 function editFormEvent(postId, caption) {
-        console.log(caption.form)
+        //console.log(caption.form)
         caption.form.addEventListener('submit', (e) => {
             e.preventDefault()
             submit_post_modification(postId, caption.value);
         })
 }
 function submit_post_modification(postId, caption) {
-    console.log('id: ' + postId, caption)
+    //console.log('id: ' + postId, caption)
     fetch(`update_post/${postId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -206,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     for(let i = 0; i < editButtonArr.length; i++){
         for (let j = 0; j < editForms.length; j++){
-
+            console.log(editForms[j].childNodes[3].childNodes[1]);
             editButtonArr[i].addEventListener('click', () => {
                 get_post_data(editForms[i].lastElementChild.id, editForms[j].childNodes[3].childNodes[1])
             })

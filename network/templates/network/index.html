@@ -13,10 +13,10 @@
                     {% if i.username == user.username %}
                         
                         <div class='edit-post'>
-                            <button type="button" id='editPostButton' class="btn btn-dark" data-toggle="modal" data-target="#editPostPopup" data-whatever="@getbootstrap">
+                            <button type="button" id='editPostButton' class="btn btn-dark" data-toggle="modal" data-target="#editPostPopup{{ i.id }}" data-whatever="@getbootstrap">
                                 <box-icon animation='none' id='editPostSvg' name='plus-circle' size='30px' color="rgb(230, 230, 230)"></box-icon></button>
                         
-                                <div class="modal fade" id="editPostPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background-color: rgba(125, 125, 125, 0.25)">
+                                <div class="modal fade" id="editPostPopup{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background-color: rgba(125, 125, 125, 0.25)">
                                     <div class="modal-dialog" role="document" tabindex='5'>
                                     <div class="modal-content">
                                     <div class="modal-header">
@@ -34,7 +34,7 @@
                                 </div>
                                       </div>
                               <div class="modal-footer">
-                                <button id='close-edit-modal' type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button id='close-edit-modal{{ i.id }}' type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <input id='edit-sub' type="submit" value='Submit'>
                              </form>
                              </div>

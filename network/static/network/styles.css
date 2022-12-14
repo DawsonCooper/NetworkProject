@@ -220,6 +220,9 @@ textarea:focus-visible{
     margin-right: 2% !important;
     justify-content: space-between;
 }
+.post-content{
+    margin: .5rem;
+}
 
 /* STYLING FOR THE INTERACTION ICONS AND BUTTONS */
 .interaction-form{
@@ -293,6 +296,7 @@ textarea:focus-visible{
 }
 .profile-sp-caption{
     width: 75%;
+    margin: .25rem;
     font-size: 1.2rem;
 }
 .profile-sp-left{
