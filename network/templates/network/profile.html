@@ -58,6 +58,7 @@
                 
             </div>
             <div class='profile-sp-right'>
+                {% if userInfo.username == user.username %}
                 <div class='edit-post'>
                     <button type="button" id='edit-post-button' class="btn btn-dark" data-toggle="modal" data-target="#modalBackdrop" data-whatever="@getbootstrap">
                         <box-icon animation='none' id='newPostSvg' name='plus-circle' size='30px' color="rgb(230, 230, 230)"></box-icon></button>
@@ -66,7 +67,7 @@
                             <div class="modal-dialog" role="document" tabindex='5'>
                             <div class="modal-content">
                             <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">New Post</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Post</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true"><box-icon name='x-circle' color='white' size='sm'></box-icon></span>
                             </button>
@@ -85,31 +86,31 @@
                               </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <input type="submit" value='Submit'>
+                        <input id='edit-sub'type="submit" value='Submit'>
                      </form>
                      </div>
                     </div>
                   </div>
                 </div>
                 </div>
-                
+                {% endif %}
             </div>
         </div>
         {% endfor %}
-        {% if  posts.has_previous or posts.has_next%}
+        {% if  userPosts.has_previous or userPosts.has_next%}
         <nav aria-label="Page navigation">
             <ul id='paginator-buttons' class="pagination">
               <div>
                 <li class="disabled">
-                {% if posts.has_previous %}
-                <a id='previous-page' href="/?page={{ posts.previous_page_number }}" tabindex="-1"><box-icon animation='fade-left-hover' color="rgb(230, 230, 230)" name='left-arrow-alt' ></box-icon></a>
+                {% if userPosts.has_previous %}
+                <a id='previous-page' href="/profile/{{ userInfo.username }}?page={{ userPosts.previous_page_number }}" tabindex="-1"><box-icon animation='fade-left-hover' color="rgb(230, 230, 230)" name='left-arrow-alt' ></box-icon></a>
                 {% endif %}
             </li>
             </div>
             <div>
               <li class="">
-                {% if posts.has_next %}
-                <a id='next-page' href="/?page={{ posts.next_page_number }}"><box-icon animation='fade-right-hover' color="rgb(230, 230, 230)" name='right-arrow-alt'></box-icon></a>
+                {% if userPosts.has_next %}
+                <a id='next-page' href="/profile/{{ userInfo.username }}?page={{ userPosts.next_page_number }}"><box-icon animation='fade-right-hover' color="rgb(230, 230, 230)" name='right-arrow-alt'></box-icon></a>
                 {% endif %}
             </li>
             </div>

@@ -17,7 +17,12 @@ function createRealationship(follower, following){
             following: following,
         })
         }).then(response => response.json())
-        .then(result => result).catch(error => alert.log(error));
+        .then(result => {
+            if (result['url']){
+                window.location.assign(result['url'])
+            }
+        })
+        .catch(error => alert.log(error));
     setTimeout(() => {
         fetch(`/create_realationship/${following}`, {
             method: 'GET',
@@ -45,7 +50,11 @@ function sendInteraction(body, postId){
                 body: body,
             })
             }).then(response => response.json())
-            .then(result => console.log(result))
+            .then(result => {
+                if (result['url']){
+                    window.location.assign(result['url'])
+                }
+            })
             .catch(error => alert(error));
             setTimeout(() => {
                 update_interaction_count()
@@ -121,7 +130,10 @@ function get_post_data(postId,caption) {
     fetch(`/get_post_data/${postId}`, {
         method: 'GET'
     }).then(response => response.json())
-    .then(result => caption.innerText = result.caption)
+    .then(result => {
+        console.log(result, 'caption: ' + caption);
+        caption.value = result.caption
+    })
     .catch(error => alert(error));
 }
 
@@ -194,8 +206,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     editForms.forEach(form => {
+        console.log(form)
         form.addEventListener('submit', (e) => {
             e.preventDefault()
+            console.log(form)
             let id = form.lastElementChild.id;
             console.log('id: ' +id)
             let caption = form.childNodes[3].childNodes[1].value;

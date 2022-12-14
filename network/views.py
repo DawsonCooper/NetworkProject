@@ -33,6 +33,7 @@ def get_posts(request, postId):
 
 
 @csrf_exempt
+@login_required(login_url='/login')
 def get_post_data(request, postId):
     postData = Post.objects.filter(id=postId).values()
 
@@ -45,11 +46,15 @@ def get_post_data(request, postId):
 
 
 @csrf_exempt
+@login_required(login_url='/login')
 def create_realationship(request, onProfile):
     """WE COULD POSSIBLY RECIEVE 3 REQUESTS POST TO CREATE A NEW REALATIONSHIP
         PUT WE WILL WANT TO DELETE THE ENTIRE ROW OF A REALATIONSHIP
         GET WE WILL WANT TO RETURN A GIVEN USERS FOLLOWERS AND FOLLOWING
     """
+    if request.user.id == None:
+        print(request.user)
+        return JsonResponse({'url': 'http://127.0.0.1:8000/login'})
     if request.method == 'GET':
         followerCount = User.objects.filter(id=onProfile).values('followers')
         followerCount = followerCount[0]['followers']
@@ -86,23 +91,32 @@ def create_realationship(request, onProfile):
 
 
 @csrf_exempt
+@login_required(login_url='/login')
 def get_user_interactions(request):
+    if request.user.id == None:
+        print(request.user)
+        return JsonResponse({'url': 'http://127.0.0.1:8000/login'})
     interactions = Likes.objects.filter(username=request.user)
 
     return JsonResponse([interaction.serialize() for interaction in interactions], safe=False)
 
 
 @csrf_exempt
+@login_required(login_url='/login')
 def update_interaction_count(request):
+    if request.user.id == None:
+        print(request.user)
+        return JsonResponse({'url': 'http://127.0.0.1:8000/login'})
     posts = Post.objects.all()
     return JsonResponse([post.serialize() for post in posts], safe=False)
 
 
-@ csrf_exempt
+@csrf_exempt
 def update_post(request, postId):
-    posts = Post.objects.all().values()
-    posts = posts.order_by("-timestamp").all()
-    posts = Paginator(posts, 10)
+    if request.user.id == None:
+        print(request.user)
+        return JsonResponse({'url': 'http://127.0.0.1:8000/login'})
+    print(postId)
     if request.method == 'PUT':
         data = json.loads(request.body)
         print(data)
@@ -112,9 +126,13 @@ def update_post(request, postId):
         return JsonResponse({'newText': caption, 'postId': postId}, safe=False)
 
 
-@ csrf_exempt
+@csrf_exempt
 def interaction_API(request, postId):
 
+    print(request.user.id)
+    if request.user.id == None:
+        print(request.user)
+        return JsonResponse({'url': 'http://127.0.0.1:8000/login'})
     try:
         post = Post.objects.get(id=postId)
     except Post.DoesNotExist:
@@ -209,7 +227,12 @@ def interaction_API(request, postId):
     return JsonResponse({'successful': 'Liked'})
 
 
+@login_required(login_url='/login')
 def following(request):
+    pNum = request.GET.get('page')
+    if pNum is None:
+        pNum = 1
+
     currUserId = request.user.id
     followList = Realationships.objects.filter(
         followerId=currUserId).values('followingId')
@@ -228,8 +251,9 @@ def following(request):
     sortedPostList = sorted(
         postList, key=lambda d: d['timestamp'], reverse=True)
     print(sortedPostList)
+    sortedPostList = Paginator(sortedPostList, 10)
     return render(request, 'network/following.html', {
-        'posts': sortedPostList,
+        'posts': sortedPostList.get_page(pNum),
     })
 
 
@@ -266,11 +290,19 @@ def index(request):
     })
 
 
+@login_required(login_url='/login')
 def profile(request, username):
+    if request.user.id == None:
+        print(request.user)
+        return JsonResponse({'url': 'http://127.0.0.1:8000/login'})
     userPosts = Post.objects.filter(username=username).all().values()
+    userPosts = userPosts.order_by('-timestamp')
     userInfo = User.objects.filter(username=username).values()
     currUser = request.user
     currUser = User.objects.filter(username=currUser).values()
+    pNum = request.GET.get('page')
+    if pNum is None:
+        pNum = 1
     try:
         Realationships.objects.get(
             followerId=currUser[0]['id'], followingId=userInfo[0]['id'])
@@ -279,9 +311,12 @@ def profile(request, username):
     except Realationships.DoesNotExist:
         isFollowing = False
     print(isFollowing)
+
+    userPosts = Paginator(userPosts, 10)
+
     return render(request, "network/profile.html", {
         'postForm': PostForm,
-        'userPosts': userPosts.order_by('-timestamp'),
+        'userPosts': userPosts.get_page(pNum),
         'userInfo': userInfo[0],
         'isFollowing': isFollowing,
     })
